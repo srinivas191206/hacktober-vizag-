@@ -1,0 +1,39 @@
+{
+  "id": "sess_1793188642_eda068",
+  "name": "Spell - Jasprit Bumrah No Wickets",
+  "bowler_name": "Jasprit Bumrah",
+  "bowling_type": "Right-arm Fast",
+  "target_balls": 5,
+  "has_wickets": false,
+  "created_at": "2026-10-28 11:57:22 UTC",
+  "updated_at": "2026-10-28 12:01:27 UTC",
+  "deliveries": [],
+  "stats": {
+    "total_balls": 0,
+    "avg_speed_mph": 0.0,
+    "max_speed_mph": 0.0,
+    "min_speed_mph": 0.0,
+    "avg_speed_kph": 0.0,
+    "avg_swing_sf": 0.0,
+    "avg_spin_deg": 0.0,
+    "length_distribution": {},
+    "line_distribution": {},
+    "consistency_score": 0.0
+  },
+  "session_calibration": {
+    "mode": "manual",
+    "manual_stumps": "{\"x_pct\":0.52,\"y_pct\":0.48,\"scale\":1.1}",
+    "calib_data": null,
+    "locked_calib": {
+      "manual_meta": {
+        "x_pct": 0.52,
+        "y_pct": 0.48,
+        "scale": 1.1
+      }
+    },
+    "apply_to_all": true,
+    "updated_at": "2026-10-28 12:01:27 UTC"
+  },
+  "player_id": "player_bumrah",
+  "team_id": "team_elite_academy"
+}

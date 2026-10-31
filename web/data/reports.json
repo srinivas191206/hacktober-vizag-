@@ -7,24 +7,76 @@
     "team_id": "team_trajecta_squad",
     "team_name": "Coastal Warriors",
     "squad_name": "Pace Battery",
-    "session_count": 1,
+    "session_count": 9,
     "sessions_included": [
-      "Match Simulation"
+      "Spell - Good Length Channel",
+      "Spell - Back of Length",
+      "Morning Practice Spell",
+      "Variation Practice",
+      "Spell - Yorker Practice",
+      "New Ball Session",
+      "Match Simulation",
+      "Spell - Short Ball Practice",
+      "Intra-Squad Match Spell"
     ],
     "analysis_date": "Nov 01, 2026",
     "created_at": "Nov 01, 2026 12:27 AM",
     "status": "Verified",
-    "summary": "High-fidelity 3D trajectory tracking completed for ss across 1 match simulation session. Top release velocity of 69.2 mph with consistent channel line attack.",
+    "summary": "High-fidelity 3D trajectory tracking completed for ss across 9 training sessions. Bowled with a top release velocity of 96.9 mph with 50% attack on the stumps.",
     "metrics": {
-      "total_deliveries": 3,
-      "deliveries_tracked": 3,
-      "peak_speed_mph": 69.2,
-      "avg_speed_mph": 57.6,
-      "peak_speed_kph": 111.4,
-      "avg_speed_kph": 92.7,
-      "stumps_threat_pct": 67,
-      "good_length_pct": 67
+      "total_deliveries": 20,
+      "deliveries_tracked": 20,
+      "peak_speed_mph": 96.9,
+      "avg_speed_mph": 79.5,
+      "peak_speed_kph": 155.9,
+      "avg_speed_kph": 127.9,
+      "stumps_threat_pct": 50,
+      "good_length_pct": 68
     },
     "file_url": "/api/reports/REP-20261101-002729/download"
+  },
+  {
+    "id": "REP-20261031-235343",
+    "name": "Player Deliveries Analysis Report",
+    "player_id": "ss",
+    "player_name": "ss",
+    "team_id": "team_trajecta_squad",
+    "team_name": "Coastal Warriors",
+    "squad_name": "Pace Battery",
+    "session_count": 1,
+    "sessions_included": [],
+    "analysis_date": "Oct 31, 2026",
+    "created_at": "Oct 31, 2026 11:53 PM",
+    "status": "Verified",
+    "summary": "Comprehensive automated spell delivery trajectory analysis.",
+    "metrics": {},
+    "file_url": "/api/reports/REP-20261031-235343/download"
+  },
+  {
+    "id": "REP-2026-SS01",
+    "name": "Spell Analysis - Good Length Channel",
+    "player_id": "player_ss",
+    "player_name": "ss",
+    "team_id": "team_trajecta_squad",
+    "team_name": "Coastal Warriors",
+    "squad_name": "Pace Battery",
+    "session_count": 2,
+    "sessions_included": [
+      "sess_1793296664_c7201f",
+      "sess_1793295739_c6e654"
+    ],
+    "analysis_date": "Oct 29, 2026",
+    "created_at": "Oct 29, 2026 11:45 AM",
+    "status": "Verified",
+    "summary": "Full tracking data for 4 deliveries across 2 spells. Good length channel discipline around 4th stump with peak speed of 96.9 mph (156 km/h) and 78% stumps threat rating.",
+    "metrics": {
+      "total_deliveries": 4,
+      "deliveries_with_tracking": 4,
+      "avg_speed_mph": 86.8,
+      "peak_speed_mph": 96.9,
+      "good_length_pct": 75,
+      "stumps_threat_pct": 82
+    },
+    "file_url": "/api/reports/REP-2026-SS01/download"
   }
 ]

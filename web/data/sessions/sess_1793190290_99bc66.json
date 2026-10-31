@@ -1,0 +1,286 @@
+{
+  "id": "sess_1793190290_99bc66",
+  "name": "Variation Practice",
+  "bowler_name": "ss",
+  "bowling_type": "Right-arm Fast",
+  "target_balls": 3,
+  "has_wickets": true,
+  "created_at": "2026-10-26 11:10 AM",
+  "updated_at": "2026-10-28 12:25:27 UTC",
+  "deliveries": [
+    {
+      "ball_number": 1,
+      "timestamp": "12:25:07",
+      "filename": "WhatsApp Video 2026-10-27 at 13.51.49.mp4",
+      "video_url": "/static/outputs/ball_track_1793190305.mp4",
+      "download_url": "/api/download?file=ball_track_1793190305.mp4&filename=detected_ball_WhatsApp Video 2026-10-27 at 13.51.49.mp4",
+      "speed_mph": 95.3,
+      "speed_kph": 153.4,
+      "swing_sf": 0.1,
+      "spin_deg": 1.8,
+      "distance_from_crease_m": 3.19,
+      "length_zone": "Full",
+      "lateral_line": "Outside Off",
+      "bounce_coord": [
+        164.09567260742188,
+        434.8037567138672,
+        51
+      ],
+      "trajectory_3d": {
+        "points_meters": [
+          {
+            "x": -1.8,
+            "y": 2.401,
+            "z": 2.498
+          },
+          {
+            "x": -1.721,
+            "y": 3.798,
+            "z": 2.272
+          },
+          {
+            "x": -1.646,
+            "y": 5.189,
+            "z": 2.036
+          },
+          {
+            "x": -1.573,
+            "y": 6.574,
+            "z": 1.789
+          },
+          {
+            "x": -1.504,
+            "y": 7.953,
+            "z": 1.534
+          },
+          {
+            "x": -1.376,
+            "y": 10.694,
+            "z": 0.992
+          },
+          {
+            "x": -1.316,
+            "y": 12.056,
+            "z": 0.707
+          },
+          {
+            "x": -1.259,
+            "y": 13.412,
+            "z": 0.412
+          },
+          {
+            "x": -1.206,
+            "y": 14.763,
+            "z": 0.108
+          },
+          {
+            "x": -1.197,
+            "y": 17.756,
+            "z": 0.278
+          },
+          {
+            "x": -1.175,
+            "y": 18.949,
+            "z": 0.517
+          }
+        ],
+        "release": {
+          "x": -1.6,
+          "y": 1.35,
+          "z": 2.45
+        },
+        "bounce": {
+          "x": -1.2,
+          "y": 15.71,
+          "z": 0.0
+        },
+        "arrival": {
+          "x": -0.85,
+          "y": 19.8,
+          "z": 0.49
+        },
+        "frame_speeds": [
+          {
+            "frame": 42,
+            "t_sec": 0.0,
+            "speed_mph": 95.3,
+            "speed_kph": 153.3,
+            "pos_3d": [
+              -1.8,
+              2.401,
+              2.498
+            ],
+            "phase": "release"
+          },
+          {
+            "frame": 43,
+            "t_sec": 0.0333,
+            "speed_mph": 95.0,
+            "speed_kph": 152.8,
+            "pos_3d": [
+              -1.721,
+              3.798,
+              2.272
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 44,
+            "t_sec": 0.0666,
+            "speed_mph": 94.7,
+            "speed_kph": 152.4,
+            "pos_3d": [
+              -1.646,
+              5.189,
+              2.036
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 45,
+            "t_sec": 0.1,
+            "speed_mph": 94.4,
+            "speed_kph": 151.9,
+            "pos_3d": [
+              -1.573,
+              6.574,
+              1.789
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 46,
+            "t_sec": 0.1333,
+            "speed_mph": 94.1,
+            "speed_kph": 151.5,
+            "pos_3d": [
+              -1.504,
+              7.953,
+              1.534
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 48,
+            "t_sec": 0.1999,
+            "speed_mph": 93.6,
+            "speed_kph": 150.6,
+            "pos_3d": [
+              -1.376,
+              10.694,
+              0.992
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 49,
+            "t_sec": 0.2333,
+            "speed_mph": 93.4,
+            "speed_kph": 150.2,
+            "pos_3d": [
+              -1.316,
+              12.056,
+              0.707
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 50,
+            "t_sec": 0.2666,
+            "speed_mph": 93.1,
+            "speed_kph": 149.9,
+            "pos_3d": [
+              -1.259,
+              13.412,
+              0.412
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 51,
+            "t_sec": 0.2999,
+            "speed_mph": 92.9,
+            "speed_kph": 149.5,
+            "pos_3d": [
+              -1.206,
+              14.763,
+              0.108
+            ],
+            "phase": "bounce"
+          },
+          {
+            "frame": 52,
+            "t_sec": 0.3332,
+            "speed_mph": 77.6,
+            "speed_kph": 124.9,
+            "pos_3d": [
+              -1.197,
+              17.756,
+              0.278
+            ],
+            "phase": "rebound"
+          },
+          {
+            "frame": 53,
+            "t_sec": 0.3666,
+            "speed_mph": 77.2,
+            "speed_kph": 124.2,
+            "pos_3d": [
+              -1.175,
+              18.949,
+              0.517
+            ],
+            "phase": "arrival"
+          }
+        ],
+        "release_speed_mph": 95.3,
+        "pre_bounce_speed_mph": 92.9,
+        "post_bounce_speed_mph": 78.0,
+        "arrival_speed_mph": 77.2,
+        "speed_drop_air_mph": 2.4,
+        "speed_drop_turf_mph": 14.9,
+        "total_speed_decay_mph": 18.1,
+        "scale_to_stadium": 1.0,
+        "stadium_pitch_y": 0.155,
+        "pitch_length_m": 20.12
+      },
+      "release_height_m": 2.45,
+      "release_lateral_m": -1.6,
+      "arrival_height_m": 0.49,
+      "release_frame": 42,
+      "bounce_frame": 51,
+      "end_frame": 53,
+      "frames_processed": 56
+    }
+  ],
+  "stats": {
+    "total_balls": 1,
+    "avg_speed_mph": 95.3,
+    "max_speed_mph": 95.3,
+    "min_speed_mph": 95.3,
+    "avg_speed_kph": 153.4,
+    "avg_swing_sf": 0.1,
+    "avg_spin_deg": 1.8,
+    "avg_release_height_m": 2.45,
+    "length_distribution": {
+      "Full": 1
+    },
+    "line_distribution": {
+      "Outside Off": 1
+    },
+    "consistency_score": 100.0
+  },
+  "avatar_url": "",
+  "player_id": "player_ss",
+  "team_id": "team_trajecta_squad",
+  "session_code": "#SS-004",
+  "session_type": "Net Practice",
+  "venue": "Side Net",
+  "pitch_type": "Hard Pitch",
+  "recording_status": "Completed",
+  "video_status": "No Video",
+  "video_duration": "--:--",
+  "notes": "Off-cutter and slower ball grip practice.",
+  "sample_thumbnail_url": "",
+  "video_clips_count": 0
+}

@@ -915,7 +915,9 @@ async def track_ball_video(
     no_wicket_mode: bool = Form(False),
     manual_stump_data: str = Form(None),
     apply_to_all_videos: bool = Form(True),
-    use_session_calibration: bool = Form(True)
+    use_session_calibration: bool = Form(True),
+    player_id: str = Form(None),
+    team_id: str = Form(None)
 ):
     src_video_path = None
     is_temp = False
@@ -1186,6 +1188,16 @@ async def track_ball_video(
                     "frames_processed": frame_count
                 }
                 session_info = add_delivery_to_session(session_id, delivery_record)
+                if session_info:
+                    updated = False
+                    if player_id and session_info.get("player_id") != player_id:
+                        session_info["player_id"] = player_id
+                        updated = True
+                    if team_id and session_info.get("team_id") != team_id:
+                        session_info["team_id"] = team_id
+                        updated = True
+                    if updated:
+                        update_session(session_id, session_info)
             except Exception as e:
                 print(f"[Session] Failed to add delivery to session {session_id}: {e}")
 
@@ -1219,8 +1231,8 @@ async def track_ball_video(
 # CRICKET SESSION MANAGEMENT APIS
 # ==========================================================
 @app.get("/api/sessions")
-async def api_list_sessions():
-    return JSONResponse(list_sessions())
+async def api_list_sessions(team_id: str = None, player_id: str = None):
+    return JSONResponse(list_sessions(team_id=team_id, player_id=player_id))
 
 @app.post("/api/sessions")
 async def api_create_session(request: Request):
@@ -1233,14 +1245,24 @@ async def api_create_session(request: Request):
     bowling_type = body.get("bowling_type", "Right-arm Fast")
     target_balls = int(body.get("target_balls", 5))
     has_wickets = bool(body.get("has_wickets", True))
+    player_id = body.get("player_id")
+    team_id = body.get("team_id")
+    squad_id = body.get("squad_id")
     session = create_session(
         name=name,
         bowler_name=bowler_name,
         bowling_type=bowling_type,
         target_balls=target_balls,
-        has_wickets=has_wickets
+        has_wickets=has_wickets,
+        player_id=player_id,
+        team_id=team_id,
+        squad_id=squad_id
     )
     return JSONResponse(session)
+
+@app.get("/api/players")
+async def api_list_all_players(team_id: str = None):
+    return JSONResponse(list_players(team_id=team_id))
 
 @app.get("/api/sessions/{session_id}")
 async def api_get_session(session_id: str):

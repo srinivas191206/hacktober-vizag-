@@ -3760,8 +3760,18 @@ function openStadiumDRSModal() {
   updateStadiumHUD(stats);
 
   // Render Trajectory
-  if (isMultiBall3DMode && currentSession && currentSession.deliveries && currentSession.deliveries.length > 0) {
-    buildMultiBall3DTrajectories(currentSession.deliveries);
+  if (isMultiBall3DMode) {
+    const dels = (activeMultiSessionDeliveries && activeMultiSessionDeliveries.length > 0)
+      ? activeMultiSessionDeliveries
+      : (currentSession && currentSession.deliveries && currentSession.deliveries.length > 0
+          ? currentSession.deliveries
+          : (currentTeamAnalysisBundle?.all_deliveries || null));
+    if (dels && dels.length > 0) {
+      buildMultiBall3DTrajectories(dels);
+    } else {
+      const traj = window.currentTrajectory3D || getDefault3DTrajectory();
+      build3DTrajectoryMesh(traj);
+    }
   } else {
     const traj = window.currentTrajectory3D || getDefault3DTrajectory();
     build3DTrajectoryMesh(traj);
@@ -4631,7 +4641,7 @@ function launchMultiBall3DStadium() {
 
   const dels = (activeMultiSessionDeliveries && activeMultiSessionDeliveries.length > 0)
     ? activeMultiSessionDeliveries
-    : (currentSession ? currentSession.deliveries : null);
+    : (currentSession ? currentSession.deliveries : (currentTeamAnalysisBundle?.all_deliveries || null));
   buildMultiBall3DTrajectories(dels);
   setStadiumCamera('batsman');
 }
@@ -10055,7 +10065,8 @@ async function loadAndRenderTeamAnalysis(sessionIds) {
     }
 
     // Refresh reports count badge in toolbar
-    fetchPlayerReportsCount(playerId);
+    const pId = bundle.player?.id || currentActivePlayerId || 'player_ss';
+    fetchPlayerReportsCount(pId);
 
     // Render accordions
     renderTeamAnalysisAccordions();
@@ -14380,6 +14391,13 @@ function updateDeliveryPlayerUI() {
 
   const d = deliveryPlayerActiveList[deliveryPlayerCurrentIndex];
   const total = deliveryPlayerActiveList.length;
+
+  if (d) {
+    window.currentTrajectoryStats = d;
+    if (d.trajectory_3d) {
+      window.currentTrajectory3D = d.trajectory_3d;
+    }
+  }
 
   // Header Title
   const titleEl = document.getElementById('dpm-delivery-title');
