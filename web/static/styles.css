@@ -15732,26 +15732,50 @@ body.view-player-sessions .dashboard-content-viewport {
   background: rgba(255, 171, 0, 0.08);
 }
 
-/* 6. STICKY SESSION SELECTION ACTION BAR */
+#view-player-sessions,
+.session-library-panel {
+  padding-bottom: 160px !important;
+}
+
+/* Hide Teams & Squads in player solo session at left side */
+body.session-library-active .breadcrumb-root,
+body.session-library-active .breadcrumb-sep,
+body.solo-player-session .breadcrumb-root,
+body.solo-player-session .breadcrumb-sep,
+body:has(#view-team-analysis:not(.hidden)) .breadcrumb-root,
+body:has(#view-team-analysis:not(.hidden)) .breadcrumb-sep,
+body:has(#view-player-sessions:not(.hidden)) .breadcrumb-root,
+body:has(#view-player-sessions:not(.hidden)) .breadcrumb-sep,
+body:has(#view-player-sessions:not(.hidden)) #sidebar-nav-teams-hub,
+body:has(#view-team-analysis:not(.hidden)) #sidebar-nav-teams-hub {
+  display: none !important;
+}
+
+/* 6. STICKY SESSION SELECTION ACTION BAR - STRICTLY FLOATING & FIXED AT BOTTOM */
 .ps-sticky-action-bar {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: calc(100% - 64px);
-  max-width: 1560px;
-  background: rgba(21, 22, 27, 0.94);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1.5px solid #FFAB00;
-  border-radius: 16px;
-  padding: 12px 24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), 0 0 24px rgba(255, 171, 0, 0.25);
-  z-index: 9999;
+  position: fixed !important;
+  bottom: 24px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: calc(100% - 64px) !important;
+  max-width: 1180px !important;
+  background: rgba(18, 20, 26, 0.96) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  border: 1.5px solid #FFAB00 !important;
+  border-radius: 16px !important;
+  padding: 14px 28px !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85), 0 0 28px rgba(255, 171, 0, 0.28) !important;
+  z-index: 999999 !important;
+  pointer-events: auto !important;
   animation: slideUpSticky 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ps-sticky-action-bar.hidden {
+  display: none !important;
 }
 
 @keyframes slideUpSticky {

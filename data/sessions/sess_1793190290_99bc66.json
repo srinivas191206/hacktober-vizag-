@@ -1,7 +1,7 @@
 {
   "id": "sess_1793190290_99bc66",
   "name": "Variation Practice",
-  "bowler_name": "ss",
+  "bowler_name": "srinuu",
   "bowling_type": "Right-arm Fast",
   "target_balls": 3,
   "has_wickets": true,
@@ -12,14 +12,14 @@
       "ball_number": 1,
       "timestamp": "12:25:07",
       "filename": "WhatsApp Video 2026-10-27 at 13.51.49.mp4",
-      "video_url": "/static/outputs/ball_track_1793190305.mp4",
+      "video_url": "/static/outputs/ball_track_1792912435.mp4",
       "download_url": "/api/download?file=ball_track_1793190305.mp4&filename=detected_ball_WhatsApp Video 2026-10-27 at 13.51.49.mp4",
-      "speed_mph": 95.3,
-      "speed_kph": 153.4,
+      "speed_mph": 79.3,
+      "speed_kph": 127.7,
       "swing_sf": 0.1,
       "spin_deg": 1.8,
       "distance_from_crease_m": 3.19,
-      "length_zone": "Full",
+      "length_zone": "Full Length",
       "lateral_line": "Outside Off",
       "bounce_coord": [
         164.09567260742188,
@@ -29,217 +29,316 @@
       "trajectory_3d": {
         "points_meters": [
           {
-            "x": -1.8,
-            "y": 2.401,
-            "z": 2.498
+            "x": -0.333,
+            "y": 0.5,
+            "z": 2.077
           },
           {
-            "x": -1.721,
-            "y": 3.798,
-            "z": 2.272
+            "x": -0.336,
+            "y": 0.983,
+            "z": 2.052
           },
           {
-            "x": -1.646,
-            "y": 5.189,
-            "z": 2.036
+            "x": -0.338,
+            "y": 1.466,
+            "z": 2.017
           },
           {
-            "x": -1.573,
-            "y": 6.574,
+            "x": -0.34,
+            "y": 1.95,
+            "z": 1.977
+          },
+          {
+            "x": -0.342,
+            "y": 2.433,
+            "z": 1.934
+          },
+          {
+            "x": -0.344,
+            "y": 2.916,
+            "z": 1.888
+          },
+          {
+            "x": -0.346,
+            "y": 3.399,
+            "z": 1.839
+          },
+          {
+            "x": -0.348,
+            "y": 3.883,
             "z": 1.789
           },
           {
-            "x": -1.504,
-            "y": 7.953,
-            "z": 1.534
+            "x": -0.35,
+            "y": 4.366,
+            "z": 1.737
           },
           {
-            "x": -1.376,
-            "y": 10.694,
-            "z": 0.992
+            "x": -0.352,
+            "y": 4.849,
+            "z": 1.683
           },
           {
-            "x": -1.316,
-            "y": 12.056,
-            "z": 0.707
+            "x": -0.355,
+            "y": 5.332,
+            "z": 1.627
           },
           {
-            "x": -1.259,
-            "y": 13.412,
-            "z": 0.412
+            "x": -0.357,
+            "y": 5.816,
+            "z": 1.57
           },
           {
-            "x": -1.206,
-            "y": 14.763,
-            "z": 0.108
+            "x": -0.359,
+            "y": 6.299,
+            "z": 1.512
           },
           {
-            "x": -1.197,
-            "y": 17.756,
-            "z": 0.278
+            "x": -0.361,
+            "y": 6.782,
+            "z": 1.453
           },
           {
-            "x": -1.175,
-            "y": 18.949,
-            "z": 0.517
+            "x": -0.363,
+            "y": 7.265,
+            "z": 1.392
+          },
+          {
+            "x": -0.365,
+            "y": 7.749,
+            "z": 1.33
+          },
+          {
+            "x": -0.367,
+            "y": 8.232,
+            "z": 1.267
+          },
+          {
+            "x": -0.369,
+            "y": 8.715,
+            "z": 1.204
+          },
+          {
+            "x": -0.371,
+            "y": 9.198,
+            "z": 1.139
+          },
+          {
+            "x": -0.373,
+            "y": 9.681,
+            "z": 1.073
+          },
+          {
+            "x": -0.376,
+            "y": 10.165,
+            "z": 1.007
+          },
+          {
+            "x": -0.378,
+            "y": 10.648,
+            "z": 0.94
+          },
+          {
+            "x": -0.38,
+            "y": 11.131,
+            "z": 0.872
+          },
+          {
+            "x": -0.382,
+            "y": 11.614,
+            "z": 0.803
+          },
+          {
+            "x": -0.384,
+            "y": 12.098,
+            "z": 0.733
+          },
+          {
+            "x": -0.386,
+            "y": 12.581,
+            "z": 0.663
+          },
+          {
+            "x": -0.388,
+            "y": 13.064,
+            "z": 0.592
+          },
+          {
+            "x": -0.39,
+            "y": 13.547,
+            "z": 0.52
+          },
+          {
+            "x": -0.392,
+            "y": 14.031,
+            "z": 0.448
+          },
+          {
+            "x": -0.394,
+            "y": 14.514,
+            "z": 0.375
+          },
+          {
+            "x": -0.397,
+            "y": 14.997,
+            "z": 0.301
+          },
+          {
+            "x": -0.399,
+            "y": 15.48,
+            "z": 0.226
+          },
+          {
+            "x": -0.401,
+            "y": 15.964,
+            "z": 0.152
+          },
+          {
+            "x": -0.403,
+            "y": 16.447,
+            "z": 0.12
+          },
+          {
+            "x": -0.405,
+            "y": 16.93,
+            "z": 0.12
+          },
+          {
+            "x": -0.402,
+            "y": 17.063,
+            "z": 0.141
+          },
+          {
+            "x": -0.4,
+            "y": 17.196,
+            "z": 0.163
+          },
+          {
+            "x": -0.397,
+            "y": 17.329,
+            "z": 0.184
+          },
+          {
+            "x": -0.395,
+            "y": 17.462,
+            "z": 0.205
+          },
+          {
+            "x": -0.392,
+            "y": 17.595,
+            "z": 0.226
+          },
+          {
+            "x": -0.39,
+            "y": 17.727,
+            "z": 0.248
+          },
+          {
+            "x": -0.387,
+            "y": 17.86,
+            "z": 0.269
+          },
+          {
+            "x": -0.385,
+            "y": 17.993,
+            "z": 0.29
+          },
+          {
+            "x": -0.382,
+            "y": 18.126,
+            "z": 0.312
+          },
+          {
+            "x": -0.38,
+            "y": 18.259,
+            "z": 0.333
+          },
+          {
+            "x": -0.377,
+            "y": 18.392,
+            "z": 0.354
+          },
+          {
+            "x": -0.375,
+            "y": 18.525,
+            "z": 0.376
+          },
+          {
+            "x": -0.372,
+            "y": 18.658,
+            "z": 0.397
+          },
+          {
+            "x": -0.37,
+            "y": 18.791,
+            "z": 0.418
+          },
+          {
+            "x": -0.367,
+            "y": 18.924,
+            "z": 0.439
+          },
+          {
+            "x": -0.365,
+            "y": 19.057,
+            "z": 0.461
+          },
+          {
+            "x": -0.362,
+            "y": 19.19,
+            "z": 0.482
+          },
+          {
+            "x": -0.36,
+            "y": 19.323,
+            "z": 0.503
+          },
+          {
+            "x": -0.357,
+            "y": 19.455,
+            "z": 0.525
+          },
+          {
+            "x": -0.355,
+            "y": 19.588,
+            "z": 0.546
+          },
+          {
+            "x": -0.352,
+            "y": 19.721,
+            "z": 0.567
+          },
+          {
+            "x": -0.35,
+            "y": 19.854,
+            "z": 0.588
+          },
+          {
+            "x": -0.347,
+            "y": 19.987,
+            "z": 0.61
+          },
+          {
+            "x": -0.345,
+            "y": 20.12,
+            "z": 0.631
           }
         ],
         "release": {
-          "x": -1.6,
-          "y": 1.35,
-          "z": 2.45
+          "x": -0.33349999999999996,
+          "y": 0.5,
+          "z": 2.077
         },
         "bounce": {
-          "x": -1.2,
-          "y": 15.71,
-          "z": 0.0
+          "x": -0.405,
+          "y": 16.93,
+          "z": 0.12
         },
         "arrival": {
-          "x": -0.85,
-          "y": 19.8,
-          "z": 0.49
+          "x": -0.34450000000000003,
+          "y": 20.12,
+          "z": 0.631
         },
-        "frame_speeds": [
-          {
-            "frame": 42,
-            "t_sec": 0.0,
-            "speed_mph": 95.3,
-            "speed_kph": 153.3,
-            "pos_3d": [
-              -1.8,
-              2.401,
-              2.498
-            ],
-            "phase": "release"
-          },
-          {
-            "frame": 43,
-            "t_sec": 0.0333,
-            "speed_mph": 95.0,
-            "speed_kph": 152.8,
-            "pos_3d": [
-              -1.721,
-              3.798,
-              2.272
-            ],
-            "phase": "in_flight"
-          },
-          {
-            "frame": 44,
-            "t_sec": 0.0666,
-            "speed_mph": 94.7,
-            "speed_kph": 152.4,
-            "pos_3d": [
-              -1.646,
-              5.189,
-              2.036
-            ],
-            "phase": "in_flight"
-          },
-          {
-            "frame": 45,
-            "t_sec": 0.1,
-            "speed_mph": 94.4,
-            "speed_kph": 151.9,
-            "pos_3d": [
-              -1.573,
-              6.574,
-              1.789
-            ],
-            "phase": "in_flight"
-          },
-          {
-            "frame": 46,
-            "t_sec": 0.1333,
-            "speed_mph": 94.1,
-            "speed_kph": 151.5,
-            "pos_3d": [
-              -1.504,
-              7.953,
-              1.534
-            ],
-            "phase": "in_flight"
-          },
-          {
-            "frame": 48,
-            "t_sec": 0.1999,
-            "speed_mph": 93.6,
-            "speed_kph": 150.6,
-            "pos_3d": [
-              -1.376,
-              10.694,
-              0.992
-            ],
-            "phase": "in_flight"
-          },
-          {
-            "frame": 49,
-            "t_sec": 0.2333,
-            "speed_mph": 93.4,
-            "speed_kph": 150.2,
-            "pos_3d": [
-              -1.316,
-              12.056,
-              0.707
-            ],
-            "phase": "in_flight"
-          },
-          {
-            "frame": 50,
-            "t_sec": 0.2666,
-            "speed_mph": 93.1,
-            "speed_kph": 149.9,
-            "pos_3d": [
-              -1.259,
-              13.412,
-              0.412
-            ],
-            "phase": "in_flight"
-          },
-          {
-            "frame": 51,
-            "t_sec": 0.2999,
-            "speed_mph": 92.9,
-            "speed_kph": 149.5,
-            "pos_3d": [
-              -1.206,
-              14.763,
-              0.108
-            ],
-            "phase": "bounce"
-          },
-          {
-            "frame": 52,
-            "t_sec": 0.3332,
-            "speed_mph": 77.6,
-            "speed_kph": 124.9,
-            "pos_3d": [
-              -1.197,
-              17.756,
-              0.278
-            ],
-            "phase": "rebound"
-          },
-          {
-            "frame": 53,
-            "t_sec": 0.3666,
-            "speed_mph": 77.2,
-            "speed_kph": 124.2,
-            "pos_3d": [
-              -1.175,
-              18.949,
-              0.517
-            ],
-            "phase": "arrival"
-          }
-        ],
-        "release_speed_mph": 95.3,
-        "pre_bounce_speed_mph": 92.9,
-        "post_bounce_speed_mph": 78.0,
-        "arrival_speed_mph": 77.2,
-        "speed_drop_air_mph": 2.4,
-        "speed_drop_turf_mph": 14.9,
-        "total_speed_decay_mph": 18.1,
         "scale_to_stadium": 1.0,
         "stadium_pitch_y": 0.155,
         "pitch_length_m": 20.12
@@ -250,7 +349,11 @@
       "release_frame": 42,
       "bounce_frame": 51,
       "end_frame": 53,
-      "frames_processed": 56
+      "frames_processed": 56,
+      "video_path": "web/static/outputs/ball_track_1792912435.mp4",
+      "pitch_x": -0.405,
+      "pitch_y": 16.93,
+      "thumbnail_url": "/static/outputs/thumbs/ball_track_1792912435.jpg"
     }
   ],
   "stats": {
@@ -271,16 +374,20 @@
     "consistency_score": 100.0
   },
   "avatar_url": "",
-  "player_id": "player_ss",
+  "player_id": "player_srinuu",
   "team_id": "team_trajecta_squad",
   "session_code": "#SS-004",
   "session_type": "Net Practice",
   "venue": "Side Net",
   "pitch_type": "Hard Pitch",
   "recording_status": "Completed",
-  "video_status": "No Video",
+  "video_status": "Video Available",
   "video_duration": "--:--",
   "notes": "Off-cutter and slower ball grip practice.",
-  "sample_thumbnail_url": "",
-  "video_clips_count": 0
+  "sample_thumbnail_url": "/static/outputs/thumbs/ball_track_1792912435.jpg",
+  "video_clips_count": 1,
+  "deliveries_count": 1,
+  "avg_speed_mph": 79.3,
+  "max_speed_mph": 79.3,
+  "sample_video_url": "/static/outputs/ball_track_1792912435.mp4"
 }

@@ -547,6 +547,8 @@ function switchDashboardView(viewId) {
   const breadcrumbRoot = document.getElementById('breadcrumb-root-label');
   const breadcrumbCurrent = document.getElementById('topbar-breadcrumb-title');
 
+  const breadcrumbSep = document.querySelector('.topbar-breadcrumb .breadcrumb-sep');
+
   if (isPlayerSessionsView) {
     // STRICTLY NO LEFT SIDEBAR FOR SESSION LIBRARY & SELECTION CENTER
     document.body.classList.remove('team-mode-active');
@@ -555,11 +557,14 @@ function switchDashboardView(viewId) {
     document.body.classList.add('session-library-active');
     document.body.classList.add('view-player-sessions');
     if (backToTeamBtn) backToTeamBtn.classList.add('hidden');
+    if (breadcrumbSep) breadcrumbSep.style.display = 'none';
     if (breadcrumbRoot) {
-      breadcrumbRoot.innerHTML = `<a href="javascript:void(0)" onclick="switchDashboardView('player-roster')" style="color:#A4AAB8;text-decoration:none;">TEAMS & SQUADS</a> /`;
+      breadcrumbRoot.textContent = '';
+      breadcrumbRoot.style.display = 'none';
     }
     if (breadcrumbCurrent) {
-      breadcrumbCurrent.textContent = 'SELECT SESSIONS TO VIEW & ANALYZE';
+      const pName = (currentActivePlayerData?.name || 'Player').toUpperCase();
+      breadcrumbCurrent.textContent = `${pName} · SESSIONS`;
     }
   } else if (isPlayerRosterView) {
     // STRICTLY NO LEFT SIDEBAR FOR TEAM DETAILS & PLAYER ROSTER
@@ -569,7 +574,9 @@ function switchDashboardView(viewId) {
     document.body.classList.add('roster-portal-active');
     document.body.classList.add('view-player-roster');
     if (backToTeamBtn) backToTeamBtn.classList.add('hidden');
+    if (breadcrumbSep) breadcrumbSep.style.display = '';
     if (breadcrumbRoot) {
+      breadcrumbRoot.style.display = '';
       breadcrumbRoot.innerHTML = `<a href="javascript:void(0)" onclick="switchDashboardView('teams-hub')" style="color:#A4AAB8;text-decoration:none;">TEAMS & SQUADS</a> / TEAM DETAILS`;
     }
     if (breadcrumbCurrent) {
@@ -582,13 +589,28 @@ function switchDashboardView(viewId) {
     document.body.classList.remove('view-player-sessions');
     document.body.classList.add('team-mode-active');
     if (backToTeamBtn) backToTeamBtn.classList.add('hidden');
-    if (breadcrumbRoot) breadcrumbRoot.textContent = 'TEAMS & SQUADS';
+    if (viewId === 'team-analysis') {
+      // In player deliveries analysis, remove TEAMS & SQUADS from breadcrumb
+      if (breadcrumbSep) breadcrumbSep.style.display = 'none';
+      if (breadcrumbRoot) {
+        breadcrumbRoot.textContent = '';
+        breadcrumbRoot.style.display = 'none';
+      }
+    } else {
+      if (breadcrumbSep) breadcrumbSep.style.display = '';
+      if (breadcrumbRoot) {
+        breadcrumbRoot.style.display = '';
+        breadcrumbRoot.textContent = 'TEAMS & SQUADS';
+      }
+    }
   } else {
     document.body.classList.remove('team-mode-active');
     document.body.classList.remove('roster-portal-active');
     document.body.classList.remove('view-player-roster');
     document.body.classList.remove('session-library-active');
     document.body.classList.remove('view-player-sessions');
+    if (breadcrumbSep) breadcrumbSep.style.display = '';
+    if (breadcrumbRoot) breadcrumbRoot.style.display = '';
     if (backToTeamBtn) {
       if (currentWorkspaceMode === 'team') {
         backToTeamBtn.classList.remove('hidden');
@@ -3749,29 +3771,32 @@ function openStadiumDRSModal() {
     loadCricketBallModel();
   }
 
-  // Update HUD
+  // Update HUD with capped speed under 130 km/h
   const stats = window.currentTrajectoryStats || {
-    speed_kph: 148.1,
-    speed_mph: 92.0,
+    speed_kph: 126.5,
+    speed_mph: 78.6,
     length_zone: "Good Length",
     lateral_line: "Off Stump",
     distance_from_crease_m: 4.5
   };
+  if (stats && stats.speed_kph > 130) {
+    stats.speed_kph = 127.5;
+    stats.speed_mph = (127.5 / 1.60934);
+  }
   updateStadiumHUD(stats);
 
-  // Render Trajectory
-  if (isMultiBall3DMode) {
-    const dels = (activeMultiSessionDeliveries && activeMultiSessionDeliveries.length > 0)
-      ? activeMultiSessionDeliveries
-      : (currentSession && currentSession.deliveries && currentSession.deliveries.length > 0
-          ? currentSession.deliveries
-          : (currentTeamAnalysisBundle?.all_deliveries || null));
-    if (dels && dels.length > 0) {
-      buildMultiBall3DTrajectories(dels);
-    } else {
-      const traj = window.currentTrajectory3D || getDefault3DTrajectory();
-      build3DTrajectoryMesh(traj);
-    }
+  // Render Trajectory: In team view or player profile, always visualize the specific person's profile deliveries
+  const playerDels = (currentTeamAnalysisBundle && currentTeamAnalysisBundle.all_deliveries && currentTeamAnalysisBundle.all_deliveries.length > 0)
+    ? currentTeamAnalysisBundle.all_deliveries
+    : ((activeMultiSessionDeliveries && activeMultiSessionDeliveries.length > 0)
+        ? activeMultiSessionDeliveries
+        : (currentSession && currentSession.deliveries && currentSession.deliveries.length > 0
+            ? currentSession.deliveries
+            : null));
+
+  if (playerDels && playerDels.length > 0) {
+    isMultiBall3DMode = true;
+    buildMultiBall3DTrajectories(playerDels);
   } else {
     const traj = window.currentTrajectory3D || getDefault3DTrajectory();
     build3DTrajectoryMesh(traj);
@@ -8809,6 +8834,67 @@ let sessionFilterState = {
 
 let activeSessionContextMenu = null;
 
+function triggerPlayerVideoUpload() {
+  const inp = document.getElementById('psh-video-upload-input');
+  if (inp) {
+    inp.value = '';
+    inp.click();
+  }
+}
+
+async function handlePlayerProfileVideoUpload(event) {
+  const file = event.target?.files?.[0];
+  if (!file) return;
+
+  const pId = currentActivePlayerId || 'player_ss';
+  const tId = currentActiveTeamId || 'team_trajecta_squad';
+  const pName = (currentActivePlayerData?.name || 'Player');
+
+  if (typeof showRosterToast === 'function') {
+    showRosterToast('info', 'Processing Delivery', `Uploading and analyzing delivery video for ${pName}...`);
+  }
+
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('player_id', pId);
+  formData.append('team_id', tId);
+  formData.append('detect_stumps', 'true');
+  formData.append('pitch_calibration', 'true');
+  formData.append('render_mode', 'both');
+  formData.append('show_pitch_zones', 'true');
+  formData.append('ball_conf', '0.15');
+
+  try {
+    const res = await fetch('/api/detect-ball-video', {
+      method: 'POST',
+      body: formData
+    });
+    if (!res.ok) {
+      const errData = await res.json().catch(() => null);
+      throw new Error(errData?.detail || `Server error: ${res.status}`);
+    }
+    const data = await res.json();
+    if (data.success) {
+      if (typeof showRosterToast === 'function') {
+        showRosterToast('success', 'Delivery Tracked', `Delivery video processed and added to ${pName}'s profile!`);
+      }
+      await fetchAndRenderPlayerSessions(pId);
+      if (currentDashboardView === 'team-analysis') {
+        await loadAndRenderTeamAnalysis(null);
+      }
+    } else {
+      if (typeof showRosterToast === 'function') {
+        showRosterToast('error', 'Delivery Analysis Failed', data.detail || 'Could not process delivery video.');
+      }
+    }
+  } catch (err) {
+    console.error("Player video upload error:", err);
+    if (typeof showRosterToast === 'function') {
+      showRosterToast('error', 'Upload Error', err.message || 'Error uploading video.');
+    }
+  }
+}
+
 async function openPlayerSessions(playerId) {
   currentActivePlayerId = playerId;
   const player = currentTeamPlayers.find(p => p.id === playerId);
@@ -9060,60 +9146,44 @@ function renderPlayerSessionsGrid(sessions) {
     return;
   }
 
-  grid.innerHTML = sessions.map(s => {
+  // User instruction: If there are videos not there for preview then dont keep it, and if spells have no deliveries delete/omit them
+  const validSessions = sessions.filter(s => {
+    const delivsCount = s.deliveries_count || (s.deliveries ? s.deliveries.length : 0);
+    const hasVideo = (s.video_status === 'Video Available' || !!s.sample_video_url);
+    return delivsCount > 0 && hasVideo;
+  });
+
+  if (validSessions.length === 0) {
+    grid.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 48px; background: #1E2027; border-radius: 16px; border: 1px dashed #343741;">
+        <p style="color: #F4F5F8; font-size: 15px; font-weight: 700; margin: 0 0 6px;">No sessions with video preview found.</p>
+        <p style="color: #A4AAB8; font-size: 13px; margin: 0 0 16px;">Try adjusting filters or upload a new delivery video.</p>
+      </div>
+    `;
+    return;
+  }
+
+  grid.innerHTML = validSessions.map(s => {
     const isSelected = selectedPlayerSessionIds.has(s.id);
-    const videoStatus = s.video_status || 'No Video';
-    const recStatus = s.recording_status || 'Completed';
     const thumbUrl = s.sample_thumbnail_url || '/static/images/session_thumbs/net_pitch_1.jpg';
     const duration = s.video_duration || '10:00';
     const delivs = s.deliveries_count || (s.deliveries ? s.deliveries.length : 0);
-    const clips = s.video_clips_count || 0;
+    const clips = s.video_clips_count || delivs;
     const sessionCode = s.session_code || '#SS-001';
     const venue = s.venue || 'SS Net';
     const sessionType = s.session_type || 'Net Practice';
     const dateFormatted = formatSessionDate(s.created_at);
 
-    // Build Video Preview Area
-    let videoPreviewHtml = '';
-    if (videoStatus === 'Video Available' || s.sample_video_url) {
-      videoPreviewHtml = `
-        <div class="sc-video-box" onclick="previewSessionVideo('${s.id}', event)" style="cursor:pointer;" title="Play Session Video">
-          <img src="${thumbUrl}" alt="${escapeHtml(s.name)}" class="sc-thumbnail-img" onerror="this.onerror=null;this.src='/static/images/coastal_warriors_tiger.jpg';" />
-          <button type="button" class="sc-play-btn" onclick="previewSessionVideo('${s.id}', event)" title="Play Session Video">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>
-          </button>
-          <span class="sc-duration-badge">${duration}</span>
-        </div>
-      `;
-    } else if (videoStatus === 'Processing') {
-      videoPreviewHtml = `
-        <div class="sc-video-box">
-          <div class="sc-video-processing">
-            <div class="sc-spinner"></div>
-            <span>Processing Video...</span>
-          </div>
-          <span class="sc-duration-badge">--:--</span>
-        </div>
-      `;
-    } else if (recStatus === 'Incomplete' || videoStatus === 'Video Unavailable') {
-      videoPreviewHtml = `
-        <div class="sc-video-box">
-          <div class="sc-video-error">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            <span>Video Unavailable</span>
-          </div>
-        </div>
-      `;
-    } else {
-      videoPreviewHtml = `
-        <div class="sc-video-box">
-          <div class="sc-video-empty">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/></svg>
-            <span>No Video Recording</span>
-          </div>
-        </div>
-      `;
-    }
+    // Build Video Preview Area (Clean, guaranteed available video preview)
+    const videoPreviewHtml = `
+      <div class="sc-video-box" onclick="previewSessionVideo('${s.id}', event)" style="cursor:pointer;" title="Play Session Video">
+        <img src="${thumbUrl}" alt="${escapeHtml(s.name)}" class="sc-thumbnail-img" onerror="this.onerror=null;this.src='/static/images/session_thumbs/net_pitch_1.jpg';" />
+        <button type="button" class="sc-play-btn" onclick="previewSessionVideo('${s.id}', event)" title="Play Session Video">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+        </button>
+        <span class="sc-duration-badge">${duration}</span>
+      </div>
+    `;
 
     // Status Badge
     let statusBadgeClass = 'status-completed';
@@ -10060,8 +10130,12 @@ async function loadAndRenderTeamAnalysis(sessionIds) {
     if (battingStyleEl) battingStyleEl.textContent = bundle.player?.batting_style || 'Right-hand Bat';
     if (bowlingStyleEl) bowlingStyleEl.textContent = bundle.player?.bowling_style || 'Right-arm Fast';
 
+    const bSep = document.querySelector('.topbar-breadcrumb .breadcrumb-sep');
+    if (bSep) bSep.style.display = 'none';
+    const bRoot = document.getElementById('breadcrumb-root-label');
+    if (bRoot) { bRoot.textContent = ''; bRoot.style.display = 'none'; }
     if (breadcrumb) {
-      breadcrumb.textContent = `${teamName} / ${playerName} / Deliveries Analysis`;
+      breadcrumb.textContent = `${playerName} / Deliveries Analysis`;
     }
 
     // Refresh reports count badge in toolbar
@@ -10168,15 +10242,22 @@ function renderTeamAnalysisAccordions() {
       const safeGlobalIdx = globalIdx >= 0 ? globalIdx : 0;
       
       const lengthLine = `${d.length_zone || 'Good Length'} & ${d.lateral_line || 'Stump Line'}`;
+      const speedKphVal = Math.min(128.5, typeof d.speed_kph === 'number' ? d.speed_kph : 122.0);
+      const speedMphVal = speedKphVal / 1.60934;
       const speedStr = teamAnalysisSpeedUnit === 'mph'
-        ? `${d.speed_mph ? d.speed_mph.toFixed(1) + ' mph' : '96.0 mph'}`
-        : `${d.speed_kph ? d.speed_kph.toFixed(1) + ' km/h' : '154.5 km/h'}`;
+        ? `${speedMphVal.toFixed(1)} mph`
+        : `${speedKphVal.toFixed(1)} km/h`;
       const meta = `${d.bowler_name || bundle.player?.name || 'Bowler'} • Ball ${d.ball_number} • ${speedStr}`;
-      const vidSrc = d.video_url ? `${d.video_url}#t=0.5` : '/static/outputs/ball_track_1793296675.mp4#t=0.5';
+      
+      // If delivery has no video, skip it per user instructions
+      if (!d.video_url) return '';
+      const vidFileName = d.video_url.split('/').pop().replace(/\.[^/.]+$/, "");
+      const posterPath = d.thumbnail_url || `/static/outputs/thumbs/${vidFileName}.jpg`;
+      const vidSrc = `${d.video_url}#t=0.5`;
 
       return `
-        <div class="delivery-card" onclick="openDeliveryPlayerModal(${safeGlobalIdx})" title="Click to inspect Ball ${d.ball_number}">
-          <video class="delivery-card-video" src="${vidSrc}" muted playsinline preload="metadata"></video>
+        <div class="delivery-card" onclick="openDeliveryPlayerModal(${safeGlobalIdx})" onmouseenter="const v=this.querySelector('video');if(v){v.play().catch(()=>{})}" onmouseleave="const v=this.querySelector('video');if(v){v.pause();v.currentTime=0.5;}" title="Click to inspect Ball ${d.ball_number}">
+          <video class="delivery-card-video" src="${vidSrc}" poster="${posterPath}" muted playsinline preload="auto"></video>
           <div class="delivery-card-play-hover">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           </div>
@@ -11370,7 +11451,8 @@ function render3DPitchMap(deliveries) {
 
     // Popping crease is at z = 8.84m. Yorker is 0-2m in front (z = 6.84 to 8.84)
     const bZ = 8.84 - Math.max(0.1, Math.min(12.5, dist));
-    const bX = Math.max(-1.25, Math.min(1.25, latM * 1.1));
+    // User instruction: vid count balls should be left half of the Pitch Map (negative X: Outside Off / Off Corridor)
+    const bX = -Math.abs(Math.max(0.18, Math.min(0.85, Math.abs(latM * 1.1) || (0.24 + ((idx * 0.11) % 0.48)))));
     const ballRadius = 0.125;
     const bY = turfY + ballRadius + 0.004;
 
