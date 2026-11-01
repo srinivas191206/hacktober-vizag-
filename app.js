@@ -959,6 +959,7 @@ function updateCommandCenterLiveInsights(session, dels) {
         const sw = d.swing_sf !== undefined ? d.swing_sf.toFixed(2) : '0.42';
         const sp = d.spin_deg !== undefined ? d.spin_deg.toFixed(1) : '4.8';
 
+        const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>
             <div class="cmd-ball-num-badge" style="border: 2px solid ${col.hex}; color: ${col.hex}; font-weight: 800;">
