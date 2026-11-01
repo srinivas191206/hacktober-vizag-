@@ -1,33 +1,64 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+# =============================================================================
+# TRAJECTA.AI / CRICKETVISION — GITIGNORE
+# =============================================================================
 
-# Node modules
-node_modules
-dist
-dist-ssr
-*.local
+# Environment variables & secrets (NEVER COMMIT)
+.env
+.env.*
+!.env.example
 
-# Editor directories and files
+# Python virtual environment & cache
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+
+# Node & Editor
+node_modules/
+.DS_Store
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
+.idea/
 *.sw?
 
-# Temporary output videos and uploads
+# Training datasets & raw image collections (~4+ GB)
+dataset/
+ball_dataset/
+ball_dataset_v2/
+ball_image_dataset/
+Redballdata-21-10/
+StumpCalib*
+new*data*
+ball!/
+stump_images/
+*.xml
+
+# Training artifacts & runs
+runs/
+scratch/
+.tempmediaStorage/
+
+# Model weights: Only track production weights, ignore all intermediate checkpoints
+weights/*
+!weights/best.pt
+!weights/ball_best.pt
+*.pt
+!weights/best.pt
+!weights/ball_best.pt
+!yolo11n.pt
+!yolo11s.pt
+
+# Output videos & uploads (preserve sample fixtures)
 outputs/*.mp4
 !outputs/sample_1_delivery_001.mp4
 !outputs/sample_2_delivery_001.mp4
 !outputs/video_1_delivery_001.mp4
+web/static/outputs/*.mp4
+web/static/outputs/archived_demo_videos/
 uploads/
 tmp/
+*.log

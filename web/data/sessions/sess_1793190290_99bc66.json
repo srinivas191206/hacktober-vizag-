@@ -12,8 +12,8 @@
       "ball_number": 1,
       "timestamp": "12:25:07",
       "filename": "WhatsApp Video 2026-10-27 at 13.51.49.mp4",
-      "video_url": "/static/outputs/ball_track_1792912435.mp4",
-      "download_url": "/api/download?file=ball_track_1793190305.mp4&filename=detected_ball_WhatsApp Video 2026-10-27 at 13.51.49.mp4",
+      "video_url": null,
+      "download_url": null,
       "speed_mph": 79.3,
       "speed_kph": 127.7,
       "swing_sf": 0.1,
@@ -350,10 +350,10 @@
       "bounce_frame": 51,
       "end_frame": 53,
       "frames_processed": 56,
-      "video_path": "web/static/outputs/ball_track_1792912435.mp4",
+      "video_path": null,
       "pitch_x": -0.405,
       "pitch_y": 16.93,
-      "thumbnail_url": "/static/outputs/thumbs/ball_track_1792912435.jpg"
+      "thumbnail_url": null
     }
   ],
   "stats": {
@@ -381,13 +381,15 @@
   "venue": "Side Net",
   "pitch_type": "Hard Pitch",
   "recording_status": "Completed",
-  "video_status": "Video Available",
-  "video_duration": "--:--",
+  "video_status": "No Video",
+  "video_duration": null,
   "notes": "Off-cutter and slower ball grip practice.",
-  "sample_thumbnail_url": "/static/outputs/thumbs/ball_track_1792912435.jpg",
-  "video_clips_count": 1,
+  "sample_thumbnail_url": null,
+  "video_clips_count": 0,
   "deliveries_count": 1,
   "avg_speed_mph": 79.3,
   "max_speed_mph": 79.3,
-  "sample_video_url": "/static/outputs/ball_track_1792912435.mp4"
+  "sample_video_url": null,
+  "video_url": null,
+  "video_path": null
 }

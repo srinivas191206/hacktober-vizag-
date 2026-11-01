@@ -15,11 +15,12 @@
     "status": "Active",
     "is_admin": true,
     "is_captain": true,
-    "spells_count": 5,
-    "peak_speed_kph": 128.5,
+    "spells_count": 27,
+    "peak_speed_kph": 128.6,
     "stumps_threat_pct": 87,
     "date_joined": "15 Oct 2026",
-    "avatar_url": ""
+    "avatar_url": "",
+    "sessions_count": 27
   },
   {
     "id": "player_deva",
@@ -81,11 +82,12 @@
     "status": "Active",
     "is_admin": false,
     "is_captain": false,
-    "spells_count": 2,
+    "spells_count": 8,
     "peak_speed_kph": 125.0,
     "stumps_threat_pct": 74,
     "date_joined": "18 Oct 2026",
-    "avatar_url": ""
+    "avatar_url": "",
+    "sessions_count": 8
   },
   {
     "id": "player_sandy",

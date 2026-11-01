@@ -13,8 +13,8 @@
       "source_filename": "1792927828377016.mp4",
       "timestamp": "11:31:17",
       "filename": "video_1_delivery_001.mp4",
-      "video_url": "/static/outputs/ball_track_1793112986.mp4",
-      "download_url": "/api/download?file=video_1_delivery_001.mp4&filename=detected_video_1_delivery_001.mp4",
+      "video_url": null,
+      "download_url": null,
       "speed_mph": 76.2,
       "speed_kph": 122.7,
       "swing_sf": 0.2,
@@ -344,10 +344,10 @@
       "bounce_frame": null,
       "end_frame": null,
       "frames_processed": 89,
-      "video_path": "web/static/outputs/ball_track_1793112986.mp4",
+      "video_path": null,
       "pitch_x": -0.239,
       "pitch_y": 15.62,
-      "thumbnail_url": "/static/outputs/thumbs/ball_track_1793112986.jpg"
+      "thumbnail_url": null
     },
     {
       "ball_number": 2,
@@ -355,8 +355,8 @@
       "source_filename": "1792927828377016.mp4",
       "timestamp": "11:32:47",
       "filename": "1792927828377016.mp4",
-      "video_url": "/static/outputs/ball_track_1793295890.mp4",
-      "download_url": "/api/download?file=ball_track_1792927912.mp4&filename=detected_ball_track_1792927912.mp4",
+      "video_url": null,
+      "download_url": null,
       "speed_mph": 59.9,
       "speed_kph": 96.4,
       "swing_sf": 0.1,
@@ -690,10 +690,10 @@
       "bounce_frame": 303,
       "end_frame": 305,
       "frames_processed": 360,
-      "video_path": "web/static/outputs/ball_track_1793295890.mp4",
+      "video_path": null,
       "pitch_x": -0.282,
       "pitch_y": 13.1,
-      "thumbnail_url": "/static/outputs/thumbs/ball_track_1793295890.jpg"
+      "thumbnail_url": null
     },
     {
       "ball_number": 3,
@@ -701,8 +701,8 @@
       "source_filename": "1792927828377016.mp4",
       "timestamp": "11:34:39",
       "filename": "video_1_delivery_001.mp4",
-      "video_url": "/static/outputs/ball_track_1793295936.mp4",
-      "download_url": "/api/download?file=video_1_delivery_001.mp4&filename=detected_video_1_delivery_001.mp4",
+      "video_url": null,
+      "download_url": null,
       "speed_mph": 74.3,
       "speed_kph": 119.5,
       "swing_sf": 0.2,
@@ -1032,10 +1032,10 @@
       "bounce_frame": null,
       "end_frame": null,
       "frames_processed": 89,
-      "video_path": "web/static/outputs/ball_track_1793295936.mp4",
+      "video_path": null,
       "pitch_x": -0.199,
       "pitch_y": 15.62,
-      "thumbnail_url": "/static/outputs/thumbs/ball_track_1793295936.jpg"
+      "thumbnail_url": null
     },
     {
       "ball_number": 4,
@@ -1043,8 +1043,8 @@
       "source_filename": "1792927828377016.mp4",
       "timestamp": "11:35:07",
       "filename": "video_1_delivery_001.mp4",
-      "video_url": "/static/outputs/ball_track_1793297975.mp4",
-      "download_url": "/api/download?file=video_1_delivery_001.mp4&filename=detected_video_1_delivery_001.mp4",
+      "video_url": null,
+      "download_url": null,
       "speed_mph": 79.0,
       "speed_kph": 127.1,
       "swing_sf": 0.2,
@@ -1374,10 +1374,10 @@
       "bounce_frame": null,
       "end_frame": null,
       "frames_processed": 89,
-      "video_path": "web/static/outputs/ball_track_1793297975.mp4",
+      "video_path": null,
       "pitch_x": -0.36,
       "pitch_y": 15.62,
-      "thumbnail_url": "/static/outputs/thumbs/ball_track_1793297975.jpg"
+      "thumbnail_url": null
     },
     {
       "ball_number": 5,
@@ -1385,8 +1385,8 @@
       "source_filename": "1792927828377016.mp4",
       "timestamp": "11:36:12",
       "filename": "1792927828377016.mp4",
-      "video_url": "/static/outputs/ball_track_1793298091.mp4",
-      "download_url": "/api/download?file=ball_track_1792928131.mp4&filename=detected_ball_track_1792928131.mp4",
+      "video_url": null,
+      "download_url": null,
       "speed_mph": 59.9,
       "speed_kph": 96.4,
       "swing_sf": 0.1,
@@ -1720,10 +1720,10 @@
       "bounce_frame": 303,
       "end_frame": 305,
       "frames_processed": 360,
-      "video_path": "web/static/outputs/ball_track_1793298091.mp4",
+      "video_path": null,
       "pitch_x": -0.46,
       "pitch_y": 13.1,
-      "thumbnail_url": "/static/outputs/thumbs/ball_track_1793298091.jpg"
+      "thumbnail_url": null
     },
     {
       "ball_number": 6,
@@ -1731,8 +1731,8 @@
       "source_filename": "1792927828377016.mp4",
       "timestamp": "11:36:57",
       "filename": "1792927828377016.mp4",
-      "video_url": "/static/outputs/ball_track_1793482487.mp4",
-      "download_url": "/api/download?file=ball_track_1792928207.mp4&filename=detected_ball_track_1792928207.mp4",
+      "video_url": null,
+      "download_url": null,
       "speed_mph": 74.3,
       "speed_kph": 119.6,
       "swing_sf": 0.2,
@@ -2062,10 +2062,10 @@
       "bounce_frame": null,
       "end_frame": null,
       "frames_processed": 138,
-      "video_path": "web/static/outputs/ball_track_1793482487.mp4",
+      "video_path": null,
       "pitch_x": -0.369,
       "pitch_y": 15.62,
-      "thumbnail_url": "/static/outputs/thumbs/ball_track_1793482487.jpg"
+      "thumbnail_url": null
     },
     {
       "ball_number": 7,
@@ -2073,8 +2073,8 @@
       "source_filename": "1792927828377016.mp4",
       "timestamp": "11:37:37",
       "filename": "1792927828377016.mp4",
-      "video_url": "/static/outputs/ball_track_1793482621.mp4",
-      "download_url": "/api/download?file=ball_track_1792928247.mp4&filename=detected_ball_track_1792928247.mp4",
+      "video_url": null,
+      "download_url": null,
       "speed_mph": 77.1,
       "speed_kph": 124.1,
       "swing_sf": 0.2,
@@ -2404,10 +2404,10 @@
       "bounce_frame": null,
       "end_frame": null,
       "frames_processed": 150,
-      "video_path": "web/static/outputs/ball_track_1793482621.mp4",
+      "video_path": null,
       "pitch_x": -0.274,
       "pitch_y": 15.62,
-      "thumbnail_url": "/static/outputs/thumbs/ball_track_1793482621.jpg"
+      "thumbnail_url": null
     },
     {
       "ball_number": 8,
@@ -2415,8 +2415,8 @@
       "source_filename": "WhatsApp Video 2026-10-25 at 11.46.08.mp4",
       "timestamp": "11:38:57",
       "filename": "WhatsApp Video 2026-10-25 at 11.46.08.mp4",
-      "video_url": "/static/outputs/ball_track_1793482672.mp4",
-      "download_url": "/api/download?file=ball_track_1792928329.mp4&filename=detected_ball_track_1792928329.mp4",
+      "video_url": null,
+      "download_url": null,
       "speed_mph": 79.1,
       "speed_kph": 127.3,
       "swing_sf": 0.1,
@@ -2750,10 +2750,10 @@
       "bounce_frame": 326,
       "end_frame": 332,
       "frames_processed": 336,
-      "video_path": "web/static/outputs/ball_track_1793482672.mp4",
+      "video_path": null,
       "pitch_x": -0.315,
       "pitch_y": 16.91,
-      "thumbnail_url": "/static/outputs/thumbs/ball_track_1793482672.jpg"
+      "thumbnail_url": null
     }
   ],
   "stats": {
@@ -2779,11 +2779,14 @@
   "player_id": "player_sandy",
   "team_id": "team_trajecta_squad",
   "deliveries_count": 8,
-  "video_clips_count": 8,
-  "video_status": "Video Available",
+  "video_clips_count": 0,
+  "video_status": "No Video",
   "recording_status": "Completed",
   "avg_speed_mph": 72.5,
   "max_speed_mph": 79.1,
-  "sample_video_url": "/static/outputs/ball_track_1793112986.mp4",
-  "sample_thumbnail_url": "/static/outputs/thumbs/ball_track_1793112986.jpg"
+  "sample_video_url": null,
+  "sample_thumbnail_url": null,
+  "video_url": null,
+  "video_path": null,
+  "video_duration": null
 }

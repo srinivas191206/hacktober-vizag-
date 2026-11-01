@@ -11,8 +11,8 @@
       "ball_number": 1,
       "timestamp": "07:05:46",
       "filename": "WhatsApp Video 2026-10-25 at 11.45.58.mp4",
-      "video_url": "/static/outputs/ball_track_1792911940.mp4",
-      "download_url": "/api/download?file=ball_track_1792911940.mp4&filename=detected_ball_WhatsApp Video 2026-10-25 at 11.45.58.mp4",
+      "video_url": null,
+      "download_url": null,
       "speed_mph": 78.2,
       "speed_kph": 125.9,
       "swing_sf": 0.1,
@@ -348,14 +348,15 @@
       "frames_processed": 297,
       "pitch_x": -0.242,
       "pitch_y": 13.71,
-      "thumbnail_url": "/static/outputs/thumbs/ball_track_1792911940.jpg"
+      "thumbnail_url": null,
+      "video_path": null
     },
     {
       "ball_number": 2,
       "timestamp": "07:14:01",
       "filename": "WhatsApp Video 2026-10-25 at 11.46.01.mp4",
-      "video_url": "/static/outputs/ball_track_1792912435.mp4",
-      "download_url": "/api/download?file=ball_track_1792912435.mp4&filename=detected_ball_WhatsApp Video 2026-10-25 at 11.46.01.mp4",
+      "video_url": null,
+      "download_url": null,
       "speed_mph": 78.1,
       "speed_kph": 125.7,
       "swing_sf": 0.1,
@@ -691,14 +692,15 @@
       "frames_processed": 282,
       "pitch_x": -0.259,
       "pitch_y": 13.51,
-      "thumbnail_url": "/static/outputs/thumbs/ball_track_1792912435.jpg"
+      "thumbnail_url": null,
+      "video_path": null
     },
     {
       "ball_number": 3,
       "timestamp": "07:16:05",
       "filename": "WhatsApp Video 2026-10-25 at 11.46.08.mp4",
-      "video_url": "/static/outputs/ball_track_1792912559.mp4",
-      "download_url": "/api/download?file=ball_track_1792912559.mp4&filename=detected_ball_WhatsApp Video 2026-10-25 at 11.46.08.mp4",
+      "video_url": null,
+      "download_url": null,
       "speed_mph": 79.1,
       "speed_kph": 127.3,
       "swing_sf": 0.1,
@@ -1034,7 +1036,8 @@
       "frames_processed": 336,
       "pitch_x": -0.213,
       "pitch_y": 16.91,
-      "thumbnail_url": "/static/outputs/thumbs/ball_track_1792912559.jpg"
+      "thumbnail_url": null,
+      "video_path": null
     }
   ],
   "stats": {
@@ -1059,11 +1062,14 @@
   "player_id": "player_srinivas",
   "team_id": "team_trajecta_squad",
   "deliveries_count": 3,
-  "video_clips_count": 3,
-  "video_status": "Video Available",
+  "video_clips_count": 0,
+  "video_status": "No Video",
   "recording_status": "Completed",
   "avg_speed_mph": 78.5,
   "max_speed_mph": 79.1,
-  "sample_video_url": "/static/outputs/ball_track_1792911940.mp4",
-  "sample_thumbnail_url": "/static/outputs/thumbs/ball_track_1792911940.jpg"
+  "sample_video_url": null,
+  "sample_thumbnail_url": null,
+  "video_url": null,
+  "video_path": null,
+  "video_duration": null
 }

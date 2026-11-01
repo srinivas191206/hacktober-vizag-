@@ -1,4 +1,10 @@
 import os
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 import re
 import urllib.parse
 import time
@@ -14,7 +20,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, JSONResponse, FileResponse, Response
 from ultralytics import YOLO
 from web.sessions_manager import (
-    create_session, list_sessions, get_session,
+    create_session, list_sessions, get_session, complete_session,
     add_delivery_to_session, delete_session, update_session,
     delete_delivery_from_session, get_multiple_sessions, aggregate_multiple_sessions
 )
@@ -1126,6 +1132,24 @@ async def track_ball_video(
             if os.path.exists(raw_out_path) and not os.path.exists(out_path):
                 os.rename(raw_out_path, out_path)
 
+        # Generate thumbnail immediately for video cards and player
+        try:
+            thumbs_dir = os.path.join(STATIC_DIR, "outputs", "thumbs")
+            os.makedirs(thumbs_dir, exist_ok=True)
+            thumb_path = os.path.join(thumbs_dir, f"{os.path.splitext(out_name)[0]}.jpg")
+            if not os.path.exists(thumb_path) and os.path.exists(out_path):
+                t_cap = cv2.VideoCapture(out_path)
+                t_cap.set(cv2.CAP_PROP_POS_FRAMES, 5)
+                t_ret, t_frame = t_cap.read()
+                if not t_ret:
+                    t_cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+                    t_ret, t_frame = t_cap.read()
+                if t_ret and t_frame is not None:
+                    cv2.imwrite(thumb_path, t_frame)
+                t_cap.release()
+        except Exception as e_th:
+            print(f"[Thumbnail Error] {e_th}")
+
         traj_data = None
         if delivery_traj is not None:
             traj_data = {
@@ -1161,6 +1185,7 @@ async def track_ball_video(
                 delivery_record = {
                     "filename": input_filename,
                     "video_url": f"/static/outputs/{out_name}",
+                    "thumbnail_url": f"/static/outputs/thumbs/{os.path.splitext(out_name)[0]}.jpg",
                     "download_url": f"/api/download?file={out_name}&filename=detected_ball_{input_filename}",
                     "speed_mph": traj_data.get("speed_mph", 0.0) if traj_data else 0.0,
                     "speed_kph": traj_data.get("speed_kph", 0.0) if traj_data else 0.0,
@@ -1179,6 +1204,8 @@ async def track_ball_video(
                     "lateral_line": traj_data.get("lateral_line", "Middle Stump") if traj_data else "Middle Stump",
                     "bounce_coord": traj_data.get("bounce_coord") if traj_data else None,
                     "trajectory_3d": traj_data.get("trajectory_3d") if traj_data else None,
+                    "pitch_x": traj_data.get("pitch_x") if traj_data and traj_data.get("pitch_x") is not None else ((traj_data.get("trajectory_3d", {}).get("bounce", {}).get("x")) if traj_data and traj_data.get("trajectory_3d") else None),
+                    "pitch_y": traj_data.get("pitch_y") if traj_data and traj_data.get("pitch_y") is not None else ((traj_data.get("trajectory_3d", {}).get("bounce", {}).get("y")) if traj_data and traj_data.get("trajectory_3d") else None),
                     "release_height_m": traj_data.get("release_height_m", 2.15) if traj_data else 2.15,
                     "release_lateral_m": traj_data.get("release_lateral_m", 0.0) if traj_data else 0.0,
                     "arrival_height_m": traj_data.get("arrival_height_m", 0.68) if traj_data else 0.68,
@@ -1275,6 +1302,18 @@ async def api_get_session(session_id: str):
 async def api_delete_session(session_id: str):
     ok = delete_session(session_id)
     return JSONResponse({"success": ok})
+
+@app.post("/api/sessions/{session_id}/complete")
+async def api_complete_session(session_id: str):
+    sess = complete_session(session_id)
+    if not sess:
+        raise HTTPException(status_code=404, detail="Session not found")
+    return JSONResponse({
+        "success": True,
+        "message": "Spell completed and synced to Coastal Warriors!",
+        "session": sess,
+        "player_profile": sess.get("player_profile", {})
+    })
 
 @app.delete("/api/sessions/{session_id}/deliveries/{delivery_id}")
 async def api_delete_delivery(session_id: str, delivery_id: str):
@@ -2339,19 +2378,286 @@ async def download_file(file: str, filename: str = None):
         }
     )
 
+# =========================================================================
+# GOOGLE GEMMA AI CRICKET INTELLIGENCE ENDPOINTS
+# =========================================================================
+from web.ai import gemma_engine
+
+@app.post("/api/ai/ask")
+async def api_ai_ask(request: Request):
+    """
+    Ask Trajecta: Contextual AI assistant grounded in bowling telemetry.
+    """
+    try:
+        data = await request.json()
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid JSON body")
+
+    query = data.get("query", "").strip()
+    if not query:
+        raise HTTPException(status_code=400, detail="Query cannot be empty")
+
+    player_id = data.get("player_id", "player_ss")
+    player = get_player(player_id) or {"name": "Bowler", "bowling_style": "Right-arm Fast"}
+    
+    deliveries = data.get("deliveries") or []
+    if not deliveries and data.get("session_ids"):
+        for sid in data["session_ids"]:
+            sess = get_session(sid)
+            if sess and sess.get("deliveries"):
+                deliveries.extend(sess["deliveries"])
+
+    if not deliveries:
+        player_sessions = get_player_sessions(player_id) or []
+        for s in player_sessions:
+            if s.get("deliveries"):
+                deliveries.extend(s["deliveries"])
+
+    import asyncio
+    result = await asyncio.to_thread(
+        gemma_engine.ask_trajecta,
+        user_query=query,
+        player_data=player,
+        deliveries=deliveries,
+        is_solo_mode=(data.get("mode") == "solo_player")
+    )
+    return JSONResponse(result)
+
+@app.post("/api/ai/compare")
+async def api_ai_compare(request: Request):
+    """
+    AI Multi-Player & Spell Comparison engine.
+    Enforces Solo Player mode privacy (only same-player spells allowed).
+    """
+    try:
+        data = await request.json()
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid JSON body")
+
+    dataset_1 = data.get("dataset_1") or {}
+    dataset_2 = data.get("dataset_2") or {}
+    mode = data.get("mode", "solo_player")
+
+    for ds in [dataset_1, dataset_2]:
+        if not ds.get("deliveries") and ds.get("session_id"):
+            sess = get_session(ds["session_id"])
+            if sess:
+                ds["deliveries"] = sess.get("deliveries", [])
+                if not ds.get("player_id"):
+                    ds["player_id"] = sess.get("player_id")
+                if not ds.get("player_name"):
+                    p = get_player(ds["player_id"]) if ds.get("player_id") else None
+                    ds["player_name"] = p["name"] if p else sess.get("player_name", "Bowler")
+                if not ds.get("label"):
+                    ds["label"] = sess.get("name", "Spell")
+
+    import asyncio
+    result = await asyncio.to_thread(gemma_engine.compare_telemetry, dataset_1, dataset_2, mode=mode)
+    return JSONResponse(result)
+
+@app.post("/api/ai/training-plan")
+async def api_ai_training_plan(request: Request):
+    """
+    AI Next-Session Training Planner based on telemetry weakness analysis.
+    """
+    try:
+        data = await request.json()
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid JSON body")
+
+    player_id = data.get("player_id", "player_ss")
+    player = get_player(player_id) or {"name": "Bowler", "bowling_style": "Right-arm Fast"}
+
+    deliveries = data.get("deliveries") or []
+    if not deliveries and data.get("session_id"):
+        sess = get_session(data["session_id"])
+        if sess and sess.get("deliveries"):
+            deliveries = sess["deliveries"]
+            p_id = sess.get("player_id")
+            if p_id:
+                player = get_player(p_id) or player
+
+    if not deliveries and data.get("session_ids"):
+        for sid in data["session_ids"]:
+            sess = get_session(sid)
+            if sess and sess.get("deliveries"):
+                deliveries.extend(sess["deliveries"])
+
+    if not deliveries:
+        player_sessions = get_player_sessions(player_id) or []
+        for s in player_sessions:
+            if s.get("deliveries"):
+                deliveries.extend(s["deliveries"])
+
+    # Fallback to player_ss sessions if this player has no recorded deliveries yet
+    if not deliveries:
+        fallback_sessions = get_player_sessions("player_ss") or []
+        for s in fallback_sessions:
+            if s.get("deliveries"):
+                deliveries.extend(s["deliveries"])
+
+    import asyncio
+    plan = await asyncio.to_thread(gemma_engine.generate_training_plan, player, deliveries)
+    return JSONResponse(plan)
+
+@app.post("/api/ai/coach-insights")
+async def api_ai_coach_insights(request: Request):
+    """
+    AI Coach Intelligence:
+    1. Evaluates what the bowler did well in this session.
+    2. Sets quantified targets for the next session.
+    3. Suggests tactical field points / fielding positions.
+    """
+    try:
+        data = await request.json()
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid JSON body")
+
+    player_id = data.get("player_id", "player_ss")
+    player = get_player(player_id) or {"name": "Bowler", "bowling_style": "Right-arm Fast"}
+
+    deliveries = data.get("deliveries") or []
+    if not deliveries and data.get("session_id"):
+        sess = get_session(data["session_id"])
+        if sess and sess.get("deliveries"):
+            deliveries = sess["deliveries"]
+            p_id = sess.get("player_id")
+            if p_id:
+                player = get_player(p_id) or player
+
+    if not deliveries and data.get("session_ids"):
+        for sid in data["session_ids"]:
+            sess = get_session(sid)
+            if sess and sess.get("deliveries"):
+                deliveries.extend(sess["deliveries"])
+
+    if not deliveries:
+        player_sessions = get_player_sessions(player_id) or []
+        for s in player_sessions:
+            if s.get("deliveries"):
+                deliveries.extend(s["deliveries"])
+
+    # Fallback to player_ss sessions if this player has no recorded deliveries yet
+    if not deliveries:
+        fallback_sessions = get_player_sessions("player_ss") or []
+        for s in fallback_sessions:
+            if s.get("deliveries"):
+                deliveries.extend(s["deliveries"])
+
+    import asyncio
+    insights = await asyncio.to_thread(gemma_engine.generate_coach_insights, player, deliveries)
+    return JSONResponse(insights)
+
+@app.get("/api/ai/config")
+async def api_ai_get_config():
+    """Returns AI configuration status (whether API key is active)."""
+    key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMMA_API_KEY")
+    return JSONResponse({
+        "configured": bool(key),
+        "model": getattr(gemma_engine, "model_name", "gemini-2.0-flash"),
+        "masked_key": f"{key[:6]}...{key[-4:]}" if key and len(key) > 10 else None
+    })
+
+@app.post("/api/ai/config")
+async def api_ai_set_config(request: Request):
+    """Allows setting or updating the Google Gemma / Gemini API key."""
+    try:
+        data = await request.json()
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid JSON body")
+
+    key = data.get("api_key", "").strip()
+    if not key:
+        raise HTTPException(status_code=400, detail="API key is required")
+
+    os.environ["GEMINI_API_KEY"] = key
+    os.environ["GEMMA_API_KEY"] = key
+    os.environ["GOOGLE_API_KEY"] = key
+
+    # Write / update .env file in root
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    env_path = os.path.join(root_dir, ".env")
+    try:
+        existing = ""
+        if os.path.exists(env_path):
+            with open(env_path, "r", encoding="utf-8") as f:
+                existing = f.read()
+
+        lines = [l for l in existing.splitlines() if not l.startswith("GEMINI_API_KEY=") and not l.startswith("GEMMA_API_KEY=") and not l.startswith("GOOGLE_API_KEY=")]
+        lines.append(f"GEMINI_API_KEY={key}")
+        lines.append(f"GEMMA_API_KEY={key}")
+        with open(env_path, "w", encoding="utf-8") as f:
+            f.write("\n".join(lines) + "\n")
+    except Exception as e:
+        print(f"[Config] Error updating .env: {e}")
+
+    gemma_engine.reconfigure(key)
+    return JSONResponse({
+        "success": True,
+        "message": "Google Gemma / Gemini API key successfully configured!",
+        "configured": True,
+        "model": getattr(gemma_engine, "model_name", "gemini-2.0-flash")
+    })
+
+@app.api_route("/static/outputs/thumbs/{file_name}", methods=["GET", "HEAD"])
+def serve_output_thumbnail(file_name: str):
+    thumbs_dir = os.path.join(STATIC_DIR, "outputs", "thumbs")
+    os.makedirs(thumbs_dir, exist_ok=True)
+    target_path = os.path.join(thumbs_dir, file_name)
+    if os.path.isfile(target_path):
+        return FileResponse(target_path, media_type="image/jpeg")
+
+    # If missing, dynamically extract frame from corresponding mp4
+    stem = os.path.splitext(file_name)[0]
+    mp4_path = os.path.join(STATIC_DIR, "outputs", f"{stem}.mp4")
+    if os.path.isfile(mp4_path):
+        try:
+            cap = cv2.VideoCapture(mp4_path)
+            cap.set(cv2.CAP_PROP_POS_FRAMES, 5)
+            ret, frame = cap.read()
+            if not ret:
+                cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+                ret, frame = cap.read()
+            if ret and frame is not None:
+                cv2.imwrite(target_path, frame)
+                cap.release()
+                return FileResponse(target_path, media_type="image/jpeg")
+            cap.release()
+        except Exception as e:
+            print(f"[Thumbnail dynamic error] {e}")
+
+    # Fallback to pitch image
+    fallback = os.path.join(STATIC_DIR, "images", "session_thumbs", "net_pitch_1.jpg")
+    if os.path.isfile(fallback):
+        return FileResponse(fallback, media_type="image/jpeg")
+    raise HTTPException(status_code=404, detail="Thumbnail not found")
+
 # Mount static directory
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
-@app.get("/")
+
+NO_CACHE_HEADERS = {
+    "Cache-Control": "no-cache, no-store, must-revalidate",
+    "Pragma": "no-cache",
+    "Expires": "0"
+}
+
+@app.api_route("/", methods=["GET", "HEAD"])
 def get_index():
-    return FileResponse(os.path.join(STATIC_DIR, "index.html"))
+    return FileResponse(os.path.join(STATIC_DIR, "index.html"), headers=NO_CACHE_HEADERS)
 
 # Root fallback route for direct static asset requests (e.g. /styles.css, /app.js, /logo.png, /favicon.png)
-@app.get("/{file_path:path}")
+@app.api_route("/{file_path:path}", methods=["GET", "HEAD"])
 def serve_static_root(file_path: str):
     full_path = os.path.join(STATIC_DIR, file_path)
     if os.path.isfile(full_path):
-        return FileResponse(full_path)
+        return FileResponse(full_path, headers=NO_CACHE_HEADERS)
+
+    # Intercept ball_track_*.jpg or thumbs requested at root
+    base_name = os.path.basename(file_path)
+    if base_name.startswith("ball_track_") and base_name.endswith(".jpg"):
+        return serve_output_thumbnail(base_name)
+
     raise HTTPException(status_code=404, detail="File not found")
 
 if __name__ == "__main__":

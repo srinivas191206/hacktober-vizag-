@@ -12,8 +12,8 @@
       "ball_number": 1,
       "timestamp": "12:25:56",
       "filename": "WhatsApp Video 2026-10-27 at 13.51.55.mp4",
-      "video_url": "/static/outputs/ball_track_1792844098.mp4",
-      "download_url": "/api/download?file=ball_track_1793190354.mp4&filename=detected_ball_WhatsApp Video 2026-10-27 at 13.51.55.mp4",
+      "video_url": null,
+      "download_url": null,
       "speed_mph": 74.1,
       "speed_kph": 119.3,
       "swing_sf": 0.7,
@@ -350,10 +350,10 @@
       "bounce_frame": 27,
       "end_frame": 37,
       "frames_processed": 38,
-      "video_path": "web/static/outputs/ball_track_1792844098.mp4",
+      "video_path": null,
       "pitch_x": -0.277,
       "pitch_y": 13.1,
-      "thumbnail_url": "/static/outputs/thumbs/ball_track_1792844098.jpg"
+      "thumbnail_url": null
     }
   ],
   "player_id": "player_deva",
@@ -363,13 +363,15 @@
   "venue": "Main Ground",
   "pitch_type": "Turf",
   "recording_status": "Completed",
-  "video_status": "Video Available",
-  "video_duration": "15:42",
+  "video_status": "No Video",
+  "video_duration": null,
   "notes": "Morning seam movement session on fresh track.",
-  "sample_thumbnail_url": "/static/outputs/thumbs/ball_track_1792844098.jpg",
-  "video_clips_count": 1,
+  "sample_thumbnail_url": null,
+  "video_clips_count": 0,
   "deliveries_count": 1,
   "avg_speed_mph": 74.1,
   "max_speed_mph": 74.1,
-  "sample_video_url": "/static/outputs/ball_track_1792844098.mp4"
+  "sample_video_url": null,
+  "video_url": null,
+  "video_path": null
 }

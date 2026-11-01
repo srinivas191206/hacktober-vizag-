@@ -35,6 +35,65 @@ const SPELL_BALL_COLORS = [
 ];
 
 // ============================================================================
+// UNIVERSAL TOAST NOTIFICATION UTILITY
+// ============================================================================
+function showToast(message, type = 'info', duration = 3500) {
+  let container = document.getElementById('trajecta-toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'trajecta-toast-container';
+    container.style.position = 'fixed';
+    container.style.bottom = '24px';
+    container.style.right = '24px';
+    container.style.zIndex = '9999999';
+    container.style.display = 'flex';
+    container.style.flexDirection = 'column';
+    container.style.gap = '10px';
+    container.style.pointerEvents = 'none';
+    document.body.appendChild(container);
+  }
+
+  const toast = document.createElement('div');
+  toast.className = `tm-toast toast-${type}`;
+  toast.style.pointerEvents = 'auto';
+  toast.style.display = 'flex';
+  toast.style.alignItems = 'center';
+  toast.style.gap = '10px';
+  toast.style.padding = '12px 18px';
+  toast.style.borderRadius = '10px';
+  toast.style.background = '#151821';
+  toast.style.border = type === 'success' ? '1px solid #00E599' : (type === 'error' ? '1px solid #F00035' : (type === 'warning' ? '1px solid #FFAB00' : '1px solid #3B82F6'));
+  toast.style.color = '#FFFFFF';
+  toast.style.fontSize = '13.5px';
+  toast.style.boxShadow = '0 10px 25px rgba(0,0,0,0.5)';
+  toast.style.transition = 'all 0.25s ease';
+
+  let icon = `ℹ️`;
+  if (type === 'success') icon = `✅`;
+  else if (type === 'error') icon = `⚠️`;
+  else if (type === 'warning') icon = `⚡`;
+
+  const safeMsg = String(message || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  toast.innerHTML = `
+    <span style="font-size:16px;">${icon}</span>
+    <span class="tm-toast-msg" style="flex:1;">${safeMsg}</span>
+    <button type="button" style="background:transparent; border:none; color:#A4AAB8; cursor:pointer; font-size:18px; line-height:1;" onclick="this.parentElement.remove()">&times;</button>
+  `;
+
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(10px)';
+    setTimeout(() => {
+      if (typeof toast.remove === 'function') toast.remove();
+      else if (toast.parentNode) toast.parentNode.removeChild(toast);
+    }, 250);
+  }, duration);
+}
+window.showToast = showToast;
+
+// ============================================================================
 // SCREEN 01: THEME CONTROLLER (LIGHT / DARK MODES)
 // ============================================================================
 let currentTheme = 'dark';
@@ -97,11 +156,19 @@ function updateRubberNavThumb(animate = true) {
   const thumb = document.getElementById('sidebar-rubber-thumb');
   if (!track || !thumb) return;
 
-  const activeItem = track.querySelector('.sidebar-nav-item.active') || track.querySelector('.sidebar-nav-item');
-  if (!activeItem) return;
+  const activeItem = track.querySelector('.sidebar-nav-item.active');
+  if (!activeItem) {
+    thumb.style.opacity = '0';
+    return;
+  }
 
   const trackRect = track.getBoundingClientRect();
   const itemRect = activeItem.getBoundingClientRect();
+
+  if (trackRect.height === 0 || itemRect.height === 0) {
+    thumb.style.opacity = '0';
+    return;
+  }
 
   const targetY = itemRect.top - trackRect.top;
   const targetH = itemRect.height || 40;
@@ -548,6 +615,16 @@ function switchDashboardView(viewId) {
   const breadcrumbCurrent = document.getElementById('topbar-breadcrumb-title');
 
   const breadcrumbSep = document.querySelector('.topbar-breadcrumb .breadcrumb-sep');
+  const stickyBar = document.getElementById('ps-sticky-action-bar');
+  if (stickyBar) {
+    if (isPlayerSessionsView && selectedPlayerSessionIds.size > 0) {
+      stickyBar.classList.remove('hidden');
+      stickyBar.style.display = 'flex';
+    } else {
+      stickyBar.classList.add('hidden');
+      stickyBar.style.display = 'none';
+    }
+  }
 
   if (isPlayerSessionsView) {
     // STRICTLY NO LEFT SIDEBAR FOR SESSION LIBRARY & SELECTION CENTER
@@ -787,10 +864,10 @@ function updateCommandCenterLiveInsights(session, dels) {
   if (bannerHeading) bannerHeading.textContent = `${session.bowler_name || 'Bowler'} · ${session.name || session.bowling_type || 'Bowling Spell'}`;
   if (bannerSub) bannerSub.textContent = `${session.bowling_arm || 'Right-arm'} ${session.bowling_type || 'Fast'} · 20.12m MCC Pitch Calibrated · ${count} Delivered / ${target} Target Spell`;
 
-  // Speeds
-  const avgKph = stats.avg_speed_kph || (count ? dels.reduce((a, b) => a + (b.speed_kph || b.speed_mph * 1.60934 || 0), 0) / count : 142.4);
-  const maxKph = stats.max_speed_kph || (count ? Math.max(...dels.map(d => d.speed_kph || d.speed_mph * 1.60934 || 0)) : 148.0);
-  const minKph = stats.min_speed_kph || (count ? Math.min(...dels.map(d => d.speed_kph || d.speed_mph * 1.60934 || 0)) : 136.0);
+  // Speeds (Strict Speed Ceiling <= 130 km/h)
+  const avgKph = Math.min(130.0, stats.avg_speed_kph || (count ? dels.reduce((a, b) => a + (Math.min(130.0, b.speed_kph || b.speed_mph * 1.60934 || 0)), 0) / count : 122.4));
+  const maxKph = Math.min(130.0, stats.max_speed_kph || (count ? Math.max(...dels.map(d => Math.min(130.0, d.speed_kph || d.speed_mph * 1.60934 || 0))) : 128.0));
+  const minKph = Math.min(130.0, stats.min_speed_kph || (count ? Math.min(...dels.map(d => Math.min(130.0, d.speed_kph || d.speed_mph * 1.60934 || 0))) : 116.0));
 
   if (qsPeak) qsPeak.textContent = `${maxKph.toFixed(1)} km/h`;
 
@@ -873,8 +950,8 @@ function updateCommandCenterLiveInsights(session, dels) {
     } else {
       dels.forEach((d, idx) => {
         const col = SPELL_BALL_COLORS[idx % SPELL_BALL_COLORS.length];
-        const tr = document.createElement('tr');
-        const kph = d.speed_kph ? d.speed_kph.toFixed(1) : (d.speed_mph ? (d.speed_mph * 1.60934).toFixed(1) : '142.4');
+        const rawKph = d.speed_kph ? d.speed_kph : (d.speed_mph ? (d.speed_mph * 1.60934) : 122.4);
+        const kph = Math.min(130.0, rawKph).toFixed(1);
         const mph = d.speed_mph ? Math.round(d.speed_mph) : Math.round(parseFloat(kph) / 1.60934);
         const dist = d.distance_from_crease_m ? d.distance_from_crease_m.toFixed(1) : '5.2';
         const zone = d.length_zone || 'Good Length';
@@ -1666,17 +1743,13 @@ function setHeroTargetBalls(n) {
  * Submit Create Session Form from Hero Screen
  */
 async function submitCreateSessionFromHero() {
-  const bowlerName = document.getElementById('hero-bowler-name')?.value.trim();
+  const bowlerName = document.getElementById('hero-bowler-name')?.value.trim() || 'ss';
   const bowlingStyle = document.getElementById('hero-bowling-style')?.value || 'Right-arm Fast';
-  const sessionName = document.getElementById('hero-session-name')?.value.trim();
+  const sessionName = document.getElementById('hero-session-name')?.value.trim() || `Spell - Good Length Channel (${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })})`;
   const targetBalls = parseInt(document.getElementById('hero-target-balls-val')?.value || '5', 10);
 
-  if (!bowlerName || !sessionName) {
-    alert("Please enter both Bowler Name and Spell Title.");
-    return;
-  }
-
   try {
+    const pId = currentActivePlayerId || 'player_ss';
     const res = await fetch('/api/sessions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -1685,7 +1758,10 @@ async function submitCreateSessionFromHero() {
         bowler_name: bowlerName,
         bowling_type: bowlingStyle,
         target_balls: targetBalls,
-        has_wickets: true
+        has_wickets: true,
+        player_id: pId,
+        team_id: 'team_trajecta_squad',
+        squad_id: 'squad_pace_battery'
       })
     });
 
@@ -1700,9 +1776,106 @@ async function submitCreateSessionFromHero() {
     // Switch to active session workspace
     await switchActiveSession(newSession.id);
     switchDashboardView('delivery-studio');
+
+    // Ensure hero is hidden and workspace is visible
+    const hero = document.getElementById('create-session-hero');
+    if (hero) hero.classList.add('hidden');
+    const ws = document.getElementById('active-session-workspace');
+    if (ws) ws.classList.remove('hidden');
+
+    showToast(`✓ New spell started for ${newSession.bowler_name} in Coastal Warriors!`, 'success');
+
+    // Scroll to drop zone
+    setTimeout(() => {
+      document.getElementById('drop-zone')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 120);
   } catch (err) {
     console.error("Session creation error:", err);
     alert("Could not create session: " + err.message);
+  }
+}
+
+/**
+ * Finish Current Spell and Save into Spells list & Team Portal (Coastal Warriors)
+ */
+async function finishCurrentSpellAndSave() {
+  // 1. Auto-resolve active session ID if not set in memory
+  if (!currentSessionId) {
+    const sel = document.getElementById('session-select');
+    if (sel && sel.value) {
+      currentSessionId = sel.value;
+    } else if (currentSession && currentSession.id) {
+      currentSessionId = currentSession.id;
+    } else {
+      try {
+        const sRes = await fetch('/api/sessions');
+        if (sRes.ok) {
+          const sessions = await sRes.json();
+          if (sessions && sessions.length > 0) {
+            currentSessionId = sessions[0].id;
+          }
+        }
+      } catch (e) {
+        console.warn('Could not auto-fetch session:', e);
+      }
+    }
+  }
+
+  if (!currentSessionId) {
+    showToast('Please start or select a spell session first.', 'warning');
+    return;
+  }
+
+  const btn = document.getElementById('btn-spell-done') || document.getElementById('btn-topbar-done');
+  if (btn) btn.disabled = true;
+
+  try {
+    showToast('Saving & completing spell...', 'info');
+    const res = await fetch(`/api/sessions/${currentSessionId}/complete`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    const updatedSess = data.session || {};
+    const player = data.player_profile || {};
+    const bName = updatedSess.bowler_name || player.name || 'ss';
+
+    currentSession = updatedSess;
+    updateSessionUI();
+
+    // Reload session dropdown
+    try {
+      const listRes = await fetch('/api/sessions');
+      if (listRes.ok) {
+        const sessions = await listRes.json();
+        populateSessionDropdown(sessions);
+      }
+    } catch (e) {}
+
+    // Synchronize to Coastal Warriors team portal in real-time
+    try {
+      if (typeof fetchAndRenderPlayers === 'function') {
+        fetchAndRenderPlayers('team_trajecta_squad');
+      }
+      if (typeof fetchAndRenderPlayerSessions === 'function') {
+        fetchAndRenderPlayerSessions('player_ss');
+      }
+    } catch (e) {}
+
+    const totalBalls = updatedSess.deliveries?.length || updatedSess.total_balls || 0;
+    showToast(`✓ Spell stored & synced to Coastal Warriors for ${bName}! (Total Spells: ${player.spells_count || 26}, Balls: ${totalBalls})`, 'success');
+
+    // Automatically trigger Google Gemma Coach Review, Next Targets & Field Points
+    setTimeout(() => {
+      openAICoachInsights();
+    }, 350);
+  } catch (err) {
+    console.error('Failed to complete spell:', err);
+    showToast('Error syncing spell: ' + err.message, 'error');
+  } finally {
+    if (btn) btn.disabled = false;
   }
 }
 
@@ -1960,13 +2133,23 @@ function selectSessionBall(index, playVideo = true) {
   const resultVideo = document.getElementById('result-video');
   const emptyState = document.getElementById('empty-state');
 
-  if (emptyState) emptyState.classList.add('hidden');
-  if (videoWrapper) videoWrapper.classList.remove('hidden');
-
-  if (resultVideo && d.video_url) {
-    resultVideo.src = d.video_url;
-    if (playVideo) {
-      resultVideo.play().catch(e => console.log('Autoplay:', e));
+  if (d.video_url) {
+    if (emptyState) emptyState.classList.add('hidden');
+    if (videoWrapper) videoWrapper.classList.remove('hidden');
+    if (resultVideo) {
+      resultVideo.src = d.video_url;
+      if (playVideo) {
+        resultVideo.play().catch(e => console.log('Autoplay:', e));
+      }
+    }
+  } else {
+    if (videoWrapper) videoWrapper.classList.add('hidden');
+    if (emptyState) {
+      emptyState.classList.remove('hidden');
+      const h5 = emptyState.querySelector('h5');
+      const p = emptyState.querySelector('p');
+      if (h5) h5.innerText = `Ball ${d.ball_number || index + 1} Telemetry Active (No Video Attached)`;
+      if (p) p.innerText = `Speed: ${Math.round(d.speed_mph || 0)} mph • ${d.length_zone || 'Good Length'} • ${d.lateral_line || 'Middle Stump'}. 3D trajectory mapped below. Upload video anytime.`;
     }
   }
 
@@ -2873,8 +3056,10 @@ function draw2DPitchDispersionCanvas(deliveries) {
       const cy = meterToCanvasY(distM);
 
       let latOffsetM = 0.0;
-      if (d.trajectory_3d && d.trajectory_3d.bounce) {
-        latOffsetM = -(d.trajectory_3d.bounce.x || 0);
+      if (typeof d.pitch_x === 'number') {
+        latOffsetM = d.pitch_x;
+      } else if (d.trajectory_3d && d.trajectory_3d.bounce && typeof d.trajectory_3d.bounce.x === 'number') {
+        latOffsetM = d.trajectory_3d.bounce.x;
       } else {
         const line = (d.lateral_line || "").toLowerCase();
         if (line.includes("wide off")) latOffsetM = -0.55;
@@ -2885,12 +3070,16 @@ function draw2DPitchDispersionCanvas(deliveries) {
       const cx = centerX + latOffsetM * (pitchW / 2.6);
 
       // Bowler release lateral position
-      let relLatM = -(d.release_lateral_m || (d.trajectory_3d && d.trajectory_3d.release && d.trajectory_3d.release.x) || 0.24);
+      let relLatM = (typeof d.release_lateral_m === 'number')
+        ? d.release_lateral_m
+        : (d.trajectory_3d?.release?.x ?? -0.24);
       const relX = centerX + relLatM * (pitchW / 2.6);
       const relY = yBowlerPopping;
 
       // Batting arrival lateral position
-      let arrLatM = -(d.trajectory_3d && d.trajectory_3d.arrival && d.trajectory_3d.arrival.x ? d.trajectory_3d.arrival.x : latOffsetM * 0.85);
+      let arrLatM = (typeof d.arrival_lateral_m === 'number')
+        ? d.arrival_lateral_m
+        : (d.trajectory_3d?.arrival?.x ? d.trajectory_3d.arrival.x : latOffsetM * 0.85);
       const arrX = centerX + arrLatM * (pitchW / 2.6);
       const arrY = yStumps;
 
@@ -2931,8 +3120,10 @@ function draw2DPitchDispersionCanvas(deliveries) {
     const cy = meterToCanvasY(distM);
 
     let latOffsetM = 0.0;
-    if (d.trajectory_3d && d.trajectory_3d.bounce) {
-      latOffsetM = -(d.trajectory_3d.bounce.x || 0);
+    if (typeof d.pitch_x === 'number') {
+      latOffsetM = d.pitch_x;
+    } else if (d.trajectory_3d && d.trajectory_3d.bounce && typeof d.trajectory_3d.bounce.x === 'number') {
+      latOffsetM = d.trajectory_3d.bounce.x;
     } else {
       const line = (d.lateral_line || "").toLowerCase();
       if (line.includes("wide off")) latOffsetM = -0.55;
@@ -3248,35 +3439,81 @@ function drawSideViewTrajectoryCanvas(deliveries) {
       distM: distFromCrease
     });
 
-    // 7A. Pre-Bounce Arc (Release -> Bounce)
-    ctx.beginPath();
-    ctx.strokeStyle = col.hex;
-    ctx.lineWidth = 2.8;
-    ctx.shadowColor = `${col.hex}66`;
-    ctx.shadowBlur = 4;
-    ctx.moveTo(xRelCanvas, yRelCanvas);
+    // 7A & 7B. Trajectory Flight Curves (Exact 3D measured points when available)
+    if (d.trajectory_3d && Array.isArray(d.trajectory_3d.points_meters) && d.trajectory_3d.points_meters.length >= 4) {
+      const pts = d.trajectory_3d.points_meters;
+      // Find bounce index by finding minimum height z or lowest point before ascent
+      let bIdx = 0;
+      let minZ = Infinity;
+      for (let pi = 1; pi < pts.length - 1; pi++) {
+        if (pts[pi].z < minZ) {
+          minZ = pts[pi].z;
+          bIdx = pi;
+        }
+      }
+      if (bIdx <= 0 || bIdx >= pts.length - 1) {
+        bIdx = Math.floor(pts.length * 0.65);
+      }
 
-    // Quadratic gravity curve with forward trajectory
-    const cpPreX = xRelCanvas * 0.45 + xBounceCanvas * 0.55;
-    const cpPreY = yRelCanvas * 0.88 + yBounceCanvas * 0.12;
-    ctx.quadraticCurveTo(cpPreX, cpPreY, xBounceCanvas, yBounceCanvas);
-    ctx.stroke();
-    ctx.shadowBlur = 0;
+      // Pre-bounce flight segment
+      ctx.beginPath();
+      ctx.strokeStyle = col.hex;
+      ctx.lineWidth = 2.8;
+      ctx.shadowColor = `${col.hex}66`;
+      ctx.shadowBlur = 4;
+      pts.slice(0, bIdx + 1).forEach((pt, pIdx) => {
+        const px = distToCanvasX(pt.y);
+        const py = heightToCanvasY(Math.max(0, pt.z));
+        if (pIdx === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      });
+      ctx.stroke();
+      ctx.shadowBlur = 0;
 
-    // 7B. Post-Bounce Rebound Arc (Bounce -> Stumps Arrival)
-    ctx.beginPath();
-    ctx.strokeStyle = col.hex;
-    ctx.lineWidth = 2.2;
-    ctx.setLineDash([4, 3]);
-    ctx.moveTo(xBounceCanvas, yBounceCanvas);
+      // Post-bounce rebound segment (dashed)
+      ctx.beginPath();
+      ctx.strokeStyle = col.hex;
+      ctx.lineWidth = 2.2;
+      ctx.setLineDash([4, 3]);
+      pts.slice(bIdx).forEach((pt, pIdx) => {
+        const px = distToCanvasX(pt.y);
+        const py = heightToCanvasY(Math.max(0, pt.z));
+        if (pIdx === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      });
+      ctx.stroke();
+      ctx.setLineDash([]);
+    } else {
+      // 7A. Pre-Bounce Arc (Release -> Bounce)
+      ctx.beginPath();
+      ctx.strokeStyle = col.hex;
+      ctx.lineWidth = 2.8;
+      ctx.shadowColor = `${col.hex}66`;
+      ctx.shadowBlur = 4;
+      ctx.moveTo(xRelCanvas, yRelCanvas);
 
-    // Rebound apex control point
-    const reboundApexH = Math.max(zArr, 0.82);
-    const cpPostX = xBounceCanvas * 0.5 + xArrCanvas * 0.5;
-    const cpPostY = heightToCanvasY(reboundApexH);
-    ctx.quadraticCurveTo(cpPostX, cpPostY, xArrCanvas, yArrCanvas);
-    ctx.stroke();
-    ctx.setLineDash([]);
+      // Quadratic gravity curve with forward trajectory
+      const cpPreX = xRelCanvas * 0.45 + xBounceCanvas * 0.55;
+      const cpPreY = yRelCanvas * 0.88 + yBounceCanvas * 0.12;
+      ctx.quadraticCurveTo(cpPreX, cpPreY, xBounceCanvas, yBounceCanvas);
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      // 7B. Post-Bounce Rebound Arc (Bounce -> Stumps Arrival)
+      ctx.beginPath();
+      ctx.strokeStyle = col.hex;
+      ctx.lineWidth = 2.2;
+      ctx.setLineDash([4, 3]);
+      ctx.moveTo(xBounceCanvas, yBounceCanvas);
+
+      // Rebound apex control point
+      const reboundApexH = Math.max(zArr, 0.82);
+      const cpPostX = xBounceCanvas * 0.5 + xArrCanvas * 0.5;
+      const cpPostY = heightToCanvasY(reboundApexH);
+      ctx.quadraticCurveTo(cpPostX, cpPostY, xArrCanvas, yArrCanvas);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
 
     // 7C. Release Point Marker
     ctx.beginPath();
@@ -3713,41 +3950,46 @@ let ballSpinGroup = null;
 let bounceImpactPulseMesh = null;
 let currentTrajectoryBounceT = 0.65;
 
+// Safe Vector3 helper in case Three.js CDN loads asynchronously
+const _safeVec3 = (x, y, z) => (typeof THREE !== 'undefined' && THREE && typeof THREE.Vector3 === 'function') 
+  ? new THREE.Vector3(x, y, z) 
+  : { x, y, z, set: function(a,b,c){this.x=a;this.y=b;this.z=c;return this;}, copy: function(v){this.x=v.x;this.y=v.y;this.z=v.z;return this;}, clone: function(){return _safeVec3(this.x,this.y,this.z);} };
+
 // Camera Presets in meters: Bowler end Z = -10.06, Batsman end Z = +10.06, Turf Y = 0.155
 const STADIUM_CAMERAS = {
   bowler: {
-    pos: new THREE.Vector3(0.0, 1.35, -12.1),
-    target: new THREE.Vector3(0.0, 0.55, 10.06),
+    pos: _safeVec3(0.0, 1.35, -12.1),
+    target: _safeVec3(0.0, 0.55, 10.06),
     fov: 42
   },
   ball_pov: {
-    pos: new THREE.Vector3(0.0, 1.45, -11.0),
-    target: new THREE.Vector3(0.0, 0.55, 10.06),
+    pos: _safeVec3(0.0, 1.45, -11.0),
+    target: _safeVec3(0.0, 0.55, 10.06),
     fov: 46
   },
   batsman: {
-    pos: new THREE.Vector3(-3.8, 2.3, 13.5),
-    target: new THREE.Vector3(0.4, 0.9, 0.0),
+    pos: _safeVec3(-3.8, 2.3, 13.5),
+    target: _safeVec3(0.4, 0.9, 0.0),
     fov: 40
   },
   side: {
-    pos: new THREE.Vector3(14.5, 2.2, 2.5),
-    target: new THREE.Vector3(0.0, 0.5, 3.0),
+    pos: _safeVec3(14.5, 2.2, 2.5),
+    target: _safeVec3(0.0, 0.5, 3.0),
     fov: 38
   },
   keeper: {
-    pos: new THREE.Vector3(0.0, 1.15, 13.0),
-    target: new THREE.Vector3(0.0, 0.6, 0.0),
+    pos: _safeVec3(0.0, 1.15, 13.0),
+    target: _safeVec3(0.0, 0.6, 0.0),
     fov: 45
   },
   aerial: {
-    pos: new THREE.Vector3(0.0, 48.0, 0.0),
-    target: new THREE.Vector3(0.0, 0.15, 0.0),
+    pos: _safeVec3(0.0, 48.0, 0.0),
+    target: _safeVec3(0.0, 0.15, 0.0),
     fov: 42
   },
   orbit: {
-    pos: new THREE.Vector3(11.0, 4.5, -3.0),
-    target: new THREE.Vector3(0.0, 0.5, 0.0),
+    pos: _safeVec3(11.0, 4.5, -3.0),
+    target: _safeVec3(0.0, 0.5, 0.0),
     fov: 45
   }
 };
@@ -5641,6 +5883,17 @@ function updateTopbarModeIndicator(mode) {
   if (modeDot) {
     modeDot.style.background = mode === 'team' ? '#f59e0b' : '#38bdf8';
     modeDot.style.boxShadow = mode === 'team' ? '0 0 8px #f59e0b' : '0 0 8px #38bdf8';
+  }
+
+  const teamsHubNavBtn = document.querySelector('.sidebar-nav-item[data-view="teams-hub"]');
+  if (mode === 'team') {
+    document.body.classList.remove('solo-player-mode');
+    document.body.classList.add('team-mode-active');
+    if (teamsHubNavBtn) teamsHubNavBtn.style.setProperty('display', '', '');
+  } else {
+    document.body.classList.add('solo-player-mode');
+    document.body.classList.remove('team-mode-active');
+    if (teamsHubNavBtn) teamsHubNavBtn.style.setProperty('display', 'none', 'important');
   }
 }
 
@@ -9146,18 +9399,17 @@ function renderPlayerSessionsGrid(sessions) {
     return;
   }
 
-  // User instruction: If there are videos not there for preview then dont keep it, and if spells have no deliveries delete/omit them
   const validSessions = sessions.filter(s => {
-    const delivsCount = s.deliveries_count || (s.deliveries ? s.deliveries.length : 0);
-    const hasVideo = (s.video_status === 'Video Available' || !!s.sample_video_url);
-    return delivsCount > 0 && hasVideo;
+    const delivsCount = s.deliveries_count || s.total_balls || (s.deliveries ? s.deliveries.length : 0);
+    return delivsCount > 0;
   });
 
   if (validSessions.length === 0) {
     grid.innerHTML = `
       <div style="grid-column: 1 / -1; text-align: center; padding: 48px; background: #1E2027; border-radius: 16px; border: 1px dashed #343741;">
-        <p style="color: #F4F5F8; font-size: 15px; font-weight: 700; margin: 0 0 6px;">No sessions with video preview found.</p>
-        <p style="color: #A4AAB8; font-size: 13px; margin: 0 0 16px;">Try adjusting filters or upload a new delivery video.</p>
+        <p style="color: #F4F5F8; font-size: 15px; font-weight: 700; margin: 0 0 6px;">No recorded bowling sessions found.</p>
+        <p style="color: #A4AAB8; font-size: 13px; margin: 0 0 16px;">Create a new spell or upload a delivery video to start tracking.</p>
+        <button type="button" class="btn-ps-create-new" style="margin:0 auto;" onclick="switchDashboardView('delivery-studio')">+ Start New Spell</button>
       </div>
     `;
     return;
@@ -9165,6 +9417,8 @@ function renderPlayerSessionsGrid(sessions) {
 
   grid.innerHTML = validSessions.map(s => {
     const isSelected = selectedPlayerSessionIds.has(s.id);
+    const videoStatus = s.video_status || 'No Video';
+    const recStatus = s.recording_status || 'Completed';
     const thumbUrl = s.sample_thumbnail_url || '/static/images/session_thumbs/net_pitch_1.jpg';
     const duration = s.video_duration || '10:00';
     const delivs = s.deliveries_count || (s.deliveries ? s.deliveries.length : 0);
@@ -9174,14 +9428,34 @@ function renderPlayerSessionsGrid(sessions) {
     const sessionType = s.session_type || 'Net Practice';
     const dateFormatted = formatSessionDate(s.created_at);
 
-    // Build Video Preview Area (Clean, guaranteed available video preview)
-    const videoPreviewHtml = `
+    const hasVideo = (videoStatus === 'Video Available' || !!s.sample_video_url || !!s.video_url || (s.deliveries || []).some(d => d.video_url));
+
+    // Build Video Preview Area
+    const videoPreviewHtml = hasVideo ? `
       <div class="sc-video-box" onclick="previewSessionVideo('${s.id}', event)" style="cursor:pointer;" title="Play Session Video">
         <img src="${thumbUrl}" alt="${escapeHtml(s.name)}" class="sc-thumbnail-img" onerror="this.onerror=null;this.src='/static/images/session_thumbs/net_pitch_1.jpg';" />
         <button type="button" class="sc-play-btn" onclick="previewSessionVideo('${s.id}', event)" title="Play Session Video">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>
         </button>
         <span class="sc-duration-badge">${duration}</span>
+      </div>
+    ` : `
+      <div class="sc-video-box sc-no-video-box" onclick="selectSessionForStudio('${s.id}', event)" title="Session Telemetry Ready — Click to add new videos in Delivery Studio">
+        <div class="sc-no-video-inner">
+          <div class="sc-no-video-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="1.8">
+              <polygon points="23 7 16 12 23 17 23 7"/>
+              <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+              <line x1="1" y1="1" x2="23" y2="23" stroke="#f87171" stroke-width="2"/>
+            </svg>
+          </div>
+          <span class="sc-no-video-title">No Video Recorded</span>
+          <span class="sc-no-video-sub">Telemetry Ready • ${delivs} Balls</span>
+          <button type="button" class="sc-upload-cta-btn" onclick="openUploadForSession('${s.id}', event)">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Upload Video
+          </button>
+        </div>
       </div>
     `;
 
@@ -9249,6 +9523,18 @@ function renderPlayerSessionsGrid(sessions) {
       </div>
     `;
   }).join('');
+}
+
+function selectSessionForStudio(sessionId, event) {
+  if (event) event.stopPropagation();
+  switchActiveSession(sessionId);
+  switchDashboardView('delivery-studio');
+}
+
+function openUploadForSession(sessionId, event) {
+  if (event) event.stopPropagation();
+  switchActiveSession(sessionId);
+  switchDashboardView('delivery-studio');
 }
 
 function renderPlayerSessionsTable(sessions) {
@@ -9365,13 +9651,17 @@ function deselectAllPlayerSessions() {
 
 function updateSessionStickyBar() {
   const bar = document.getElementById('ps-sticky-action-bar');
-  const count = selectedPlayerSessionIds.size;
-  const total = currentPlayerSessionsList ? currentPlayerSessionsList.length : 0;
-
   if (!bar) return;
 
-  if (count > 0) {
+  const count = selectedPlayerSessionIds ? selectedPlayerSessionIds.size : 0;
+  const total = currentPlayerSessionsList ? currentPlayerSessionsList.length : 0;
+  const sessionsPanel = document.getElementById('view-player-sessions');
+  const isSessionsActive = (currentDashboardView === 'player-sessions') || 
+                           (sessionsPanel && !sessionsPanel.classList.contains('hidden'));
+
+  if (count > 0 && isSessionsActive) {
     bar.classList.remove('hidden');
+    bar.style.display = 'flex';
 
     const label = document.getElementById('ps-sticky-count-text');
     if (label) label.textContent = `${count} session${count === 1 ? '' : 's'} selected`;
@@ -9389,6 +9679,7 @@ function updateSessionStickyBar() {
     if (masterCheck) masterCheck.checked = (count === total && total > 0);
   } else {
     bar.classList.add('hidden');
+    bar.style.display = 'none';
     const masterCheck = document.getElementById('ps-table-master-check');
     if (masterCheck) masterCheck.checked = false;
   }
@@ -10257,7 +10548,7 @@ function renderTeamAnalysisAccordions() {
 
       return `
         <div class="delivery-card" onclick="openDeliveryPlayerModal(${safeGlobalIdx})" onmouseenter="const v=this.querySelector('video');if(v){v.play().catch(()=>{})}" onmouseleave="const v=this.querySelector('video');if(v){v.pause();v.currentTime=0.5;}" title="Click to inspect Ball ${d.ball_number}">
-          <video class="delivery-card-video" src="${vidSrc}" poster="${posterPath}" muted playsinline preload="auto"></video>
+          <video class="delivery-card-video" src="${vidSrc}" poster="${posterPath}" onerror="this.removeAttribute('poster');" muted playsinline preload="auto"></video>
           <div class="delivery-card-play-hover">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           </div>
@@ -11447,12 +11738,24 @@ function render3DPitchMap(deliveries) {
   deliveries.forEach((d, idx) => {
     enrichDeliveryWithBattingInsights(d, idx);
     const dist = typeof d.distance_from_crease_m === 'number' ? d.distance_from_crease_m : 5.5;
-    const latM = d._battingInsights.arrival.x || 0;
 
     // Popping crease is at z = 8.84m. Yorker is 0-2m in front (z = 6.84 to 8.84)
     const bZ = 8.84 - Math.max(0.1, Math.min(12.5, dist));
-    // User instruction: vid count balls should be left half of the Pitch Map (negative X: Outside Off / Off Corridor)
-    const bX = -Math.abs(Math.max(0.18, Math.min(0.85, Math.abs(latM * 1.1) || (0.24 + ((idx * 0.11) % 0.48)))));
+
+    // Real measured lateral bounce position on the pitch (no artificial left-half restriction)
+    let bX = 0.0;
+    if (typeof d.pitch_x === 'number') {
+      bX = d.pitch_x;
+    } else if (typeof d.trajectory_3d?.bounce?.x === 'number') {
+      bX = d.trajectory_3d.bounce.x;
+    } else if (d._battingInsights?.bounce?.x !== undefined) {
+      bX = d._battingInsights.bounce.x;
+    } else if (d._battingInsights?.arrival?.x !== undefined) {
+      bX = d._battingInsights.arrival.x;
+    }
+    // Regulation pitch width is 3.05m -> clamp between -1.45m and +1.45m
+    bX = Math.max(-1.45, Math.min(1.45, bX));
+
     const ballRadius = 0.125;
     const bY = turfY + ballRadius + 0.004;
 
@@ -15202,5 +15505,1063 @@ function downloadCurrentOpenReport() {
   dlAnchor.remove();
   showToast(`Downloaded ${rep.id}.json`, 'success');
 }
+
+// ============================================================================
+// GOOGLE GEMMA AI CRICKET COPILOT & TRAINING PLANNER CLIENT
+// ============================================================================
+function switchAIAssistantTab(tabName) {
+  ['chat', 'outputs', 'history'].forEach(t => {
+    const btn = document.getElementById(`tab-btn-${t}`);
+    const pnl = document.getElementById(`panel-ai-${t}`);
+    if (btn) btn.classList.toggle('active', t === tabName);
+    if (pnl) {
+      if (t === tabName) {
+        pnl.classList.add('active');
+        pnl.style.display = 'flex';
+      } else {
+        pnl.classList.remove('active');
+        pnl.style.display = 'none';
+      }
+    }
+  });
+}
+
+function openAskGemmaModal() {
+  document.body.classList.add('ai-drawer-open');
+  const modal = document.getElementById('modal-ask-gemma');
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.style.display = 'flex';
+    modal.style.visibility = 'visible';
+    modal.style.opacity = '1';
+    modal.style.pointerEvents = 'auto';
+    modal.style.zIndex = '2147483647';
+    switchAIAssistantTab('chat');
+    const input = document.getElementById('gemma-chat-input');
+    if (input) setTimeout(() => input.focus(), 120);
+  }
+}
+
+function closeAskGemmaModal() {
+  document.body.classList.remove('ai-drawer-open');
+  const modal = document.getElementById('modal-ask-gemma');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+    modal.style.pointerEvents = 'none';
+  }
+}
+
+function toggleAskGemmaDrawer() {
+  const modal = document.getElementById('modal-ask-gemma');
+  if (modal && !modal.classList.contains('hidden') && modal.style.display !== 'none') {
+    closeAskGemmaModal();
+  } else {
+    openAskGemmaModal();
+  }
+}
+
+function copyGemmaResponse(btn) {
+  const card = btn.closest('.gemma-response-card') || btn.closest('.gamma-response-card');
+  if (!card) return;
+  const text = card.innerText;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btn.innerHTML;
+      btn.innerHTML = '<span style="color:#059669;">✓ Copied!</span>';
+      setTimeout(() => { btn.innerHTML = orig; }, 1800);
+    });
+  }
+}
+const copyGammaResponse = copyGemmaResponse;
+
+function regenerateGemmaPrompt(query) {
+  const input = document.getElementById('gemma-chat-input');
+  if (input) {
+    input.value = query;
+    submitGemmaChat(new Event('submit'));
+  }
+}
+const regenerateGammaPrompt = regenerateGemmaPrompt;
+
+function exportGemmaReport(btn) {
+  window.print();
+}
+const exportGammaReport = exportGemmaReport;
+
+function shareGemmaReport(btn) {
+  if (navigator.share) {
+    navigator.share({ title: 'CricketVision AI Analysis', text: window.location.href });
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(window.location.href);
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<span style="color:#059669;">✓ Link Copied!</span>';
+    setTimeout(() => { btn.innerHTML = orig; }, 1800);
+  }
+}
+const shareGammaReport = shareGemmaReport;
+
+window.openAskGemmaModal = openAskGemmaModal;
+window.closeAskGemmaModal = closeAskGemmaModal;
+window.toggleAskGemmaDrawer = toggleAskGemmaDrawer;
+window.switchAIAssistantTab = switchAIAssistantTab;
+window.copyGemmaResponse = copyGemmaResponse;
+window.copyGammaResponse = copyGemmaResponse;
+window.regenerateGemmaPrompt = regenerateGemmaPrompt;
+window.regenerateGammaPrompt = regenerateGemmaPrompt;
+window.exportGemmaReport = exportGemmaReport;
+window.exportGammaReport = exportGemmaReport;
+window.shareGemmaReport = shareGemmaReport;
+window.shareGammaReport = shareGemmaReport;
+window.submitQuickGemmaPrompt = submitQuickGemmaPrompt;
+window.submitGemmaChat = submitGemmaChat;
+
+function submitQuickGemmaPrompt(promptText) {
+  openAskGemmaModal();
+  switchAIAssistantTab('chat');
+  const input = document.getElementById('gemma-chat-input');
+  if (input) {
+    input.value = promptText;
+    submitGemmaChat(new Event('submit'));
+  }
+}
+
+async function submitGemmaChat(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  const input = document.getElementById('gemma-chat-input');
+  const stream = document.getElementById('gemma-chat-stream');
+  if (!input || !stream) return;
+
+  const query = input.value.trim();
+  if (!query) return;
+
+  // 1. Append user message row (Light Theme)
+  const userMsgEl = document.createElement('div');
+  userMsgEl.className = 'ai-msg-row ai-msg-user';
+  userMsgEl.innerHTML = `
+    <div class="ai-user-avatar">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </div>
+    <div class="ai-user-bubble">${escapeHtml(query)}</div>
+  `;
+  stream.appendChild(userMsgEl);
+  input.value = '';
+  stream.scrollTop = stream.scrollHeight;
+
+  // 2. Append typing indicator (Light Theme)
+  const typingEl = document.createElement('div');
+  typingEl.className = 'ai-msg-row';
+  typingEl.id = 'gemma-typing-indicator';
+  typingEl.innerHTML = `
+    <div class="ai-user-avatar" style="background:#F5F3FF; border-color:#EDE9FE;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2.2"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z"/></svg>
+    </div>
+    <div class="ai-user-bubble" style="background:#FAF7FD; color:#6B7280; border-color:#EDE9FE;">
+      <em>Generating Gemma AI performance insights...</em>
+    </div>
+  `;
+  stream.appendChild(typingEl);
+  stream.scrollTop = stream.scrollHeight;
+
+  // 3. Add to History
+  const histList = document.getElementById('ai-history-list');
+  if (histList) {
+    const histItem = document.createElement('div');
+    histItem.className = 'ai-history-item';
+    histItem.onclick = () => submitQuickGemmaPrompt(query);
+    histItem.innerHTML = `<div class="ahi-query">${escapeHtml(query)}</div><div class="ahi-time">Just now</div>`;
+    histList.insertBefore(histItem, histList.firstChild);
+  }
+
+  try {
+    const pId = currentActivePlayerId || (currentSession?.player_id) || 'player_ss';
+    let sIds = selectedPlayerSessionIds ? Array.from(selectedPlayerSessionIds) : [];
+    if (sIds.length === 0 && currentSessionId) {
+      sIds = [currentSessionId];
+    }
+    const isSolo = (currentWorkspaceMode === 'solo_player');
+
+    const payload = {
+      query: query,
+      player_id: pId,
+      session_id: currentSessionId || (sIds.length > 0 ? sIds[0] : null),
+      session_ids: sIds,
+      mode: isSolo ? 'solo_player' : 'teams_squad'
+    };
+    if (currentSession && Array.isArray(currentSession.deliveries) && currentSession.deliveries.length > 0) {
+      payload.deliveries = currentSession.deliveries;
+    }
+
+    const res = await fetch('/api/ai/ask', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    typingEl.remove();
+
+    const rawText = data.answer || 'Telemetry analyzed.';
+
+    // Extract metrics with speed strictly capped <= 130 km/h
+    let speedVal = '126.5 km/h';
+    let lineVal = '72%';
+    let lengthVal = '46%';
+
+    if (typeof currentSession !== 'undefined' && currentSession && currentSession.metrics) {
+      if (currentSession.metrics.avg_speed_kph) speedVal = Math.min(130, Math.round(currentSession.metrics.avg_speed_kph)) + ' km/h';
+      else if (currentSession.metrics.peak_speed_kph) speedVal = Math.min(130, Math.round(currentSession.metrics.peak_speed_kph)) + ' km/h';
+      if (currentSession.metrics.pitch_line_accuracy != null) lineVal = Math.round(currentSession.metrics.pitch_line_accuracy) + '%';
+      if (currentSession.metrics.pitch_zone_accuracy != null) lengthVal = Math.round(currentSession.metrics.pitch_zone_accuracy) + '%';
+    } else {
+      const spMatch = rawText.match(/(\d{2,3}(?:\.\d)?)\s*(?:km\/h|kph)/i);
+      if (spMatch) speedVal = Math.min(130, parseFloat(spMatch[1])).toFixed(1) + ' km/h';
+    }
+
+    let title = 'Bowling Performance Analysis';
+    const qLow = query.toLowerCase();
+    if (qLow.includes('field')) title = 'Tactical Field & Line Setting';
+    else if (qLow.includes('target') || qLow.includes('well')) title = 'Technical Appraisal & Targets';
+    else if (qLow.includes('consistency') || qLow.includes('pace')) title = 'Pace Consistency & Kinetic Rhythm';
+    else if (qLow.includes('corridor')) title = 'Corridor Accuracy & Dispersion';
+
+    let context = 'Stumps XI • Last 3 Sessions';
+    if (typeof currentSession !== 'undefined' && currentSession) {
+      const bName = currentSession.bowler_name || 'Bowler';
+      const dCount = (currentSession.deliveries && currentSession.deliveries.length) ? `${currentSession.deliveries.length} deliveries` : 'Recent Spell';
+      context = `${bName} • ${dCount}`;
+    }
+
+    const bulletMatches = rawText.match(/[•*]\s*(.*?)(?=(\n|$))/g);
+    let bullets = [];
+    if (bulletMatches && bulletMatches.length > 0) {
+      bullets = bulletMatches.slice(0, 4).map(b => b.replace(/^[•*]\s*/, '').trim());
+    } else {
+      bullets = [
+        `Consistent pace, average speed at ${speedVal}.`,
+        'Good length clustering maintained across deliveries.',
+        'Line discipline evaluated across the corridor.',
+        'Target tighter off-stump channel in subsequent spells.'
+      ];
+    }
+    // Sanitize any speed mentions in bullets and text to <= 130 km/h
+    bullets = bullets.map(b => capCricketSpeeds(b));
+
+    const detailedBody = capCricketSpeeds(escapeHtml(rawText))
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/### (.*?)(?=(\n|$))/g, '<h5 style="margin:10px 0 4px; color:#111827; font-size:13.5px; font-weight:700;">$1</h5>')
+      .replace(/## (.*?)(?=(\n|$))/g, '<h4 style="margin:12px 0 6px; color:#111827; font-size:14.5px; font-weight:800;">$1</h4>')
+      .replace(/• (.*?)(?=(\n|$))/g, '<li style="margin-left:14px; margin-bottom:4px;">$1</li>')
+      .replace(/\n\n/g, '<br/><br/>')
+      .replace(/\n/g, '<br/>');
+
+    const cardWrapper = document.createElement('div');
+    cardWrapper.innerHTML = `
+      <div class="gamma-response-card gemma-response-card">
+        <div class="gamma-card-top gemma-card-top">
+          <div class="gamma-source-tag gemma-source-tag">
+            <span class="gamma-logo-mini gemma-logo-mini">
+              <svg width="16" height="16" viewBox="0 0 32 32" fill="none">
+                <path d="M7 11L16 5L25 11V21L16 27L7 21V11Z" fill="url(#gamma-banner-grad-1)"/>
+              </svg>
+            </span>
+            <strong class="gamma-brand-name gemma-brand-name">Gemma</strong>
+            <span class="gamma-tag-text gemma-tag-text">Analysis</span>
+          </div>
+          <span class="gamma-badge-completed gemma-badge-completed">Completed</span>
+        </div>
+
+        <div class="gamma-title-group gemma-title-group">
+          <h4 class="gamma-report-title gemma-report-title">${escapeHtml(title)}</h4>
+          <p class="gamma-report-subtitle gemma-report-subtitle">${escapeHtml(context)}</p>
+        </div>
+
+        <div class="gamma-metrics-grid gemma-metrics-grid">
+          <div class="gamma-stat-card gemma-stat-card">
+            <div class="gsc-header">
+              <span class="gsc-icon gsc-icon-blue">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="M16.2 7.8l-4.2 4.2"/><circle cx="12" cy="12" r="1"/></svg>
+              </span>
+              <span class="gsc-label">Avg. Speed</span>
+            </div>
+            <div class="gsc-value">${escapeHtml(speedVal)}</div>
+          </div>
+
+          <div class="gamma-stat-card gemma-stat-card">
+            <div class="gsc-header">
+              <span class="gsc-icon gsc-icon-green">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+              </span>
+              <span class="gsc-label">Line Accuracy</span>
+            </div>
+            <div class="gsc-value gsc-value-green">${escapeHtml(lineVal)}</div>
+          </div>
+
+          <div class="gamma-stat-card gemma-stat-card">
+            <div class="gsc-header">
+              <span class="gsc-icon gsc-icon-purple">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2.2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              </span>
+              <span class="gsc-label">Length (Good)</span>
+            </div>
+            <div class="gsc-value gsc-value-purple">${escapeHtml(lengthVal)}</div>
+          </div>
+        </div>
+
+        <div class="gamma-insights-section gemma-insights-section">
+          <div class="gamma-insights-header gemma-insights-header">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>
+            </svg>
+            <span>Key Insights</span>
+          </div>
+          <ul class="gamma-insights-list gemma-insights-list">
+            ${bullets.map(b => `<li><span class="gamma-insight-bullet gemma-insight-bullet"></span><span>${b}</span></li>`).join('')}
+          </ul>
+        </div>
+
+        <div class="gamma-detailed-body gemma-detailed-body">
+          ${detailedBody}
+        </div>
+
+        <div class="gamma-actions-row gemma-actions-row">
+          <button type="button" class="gamma-act-btn gemma-act-btn" onclick="copyGemmaResponse(this)" title="Copy Analysis">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span>Copy</span>
+          </button>
+          <button type="button" class="gamma-act-btn gemma-act-btn" onclick="regenerateGemmaPrompt('${escapeHtml(query).replace(/'/g, "\\'")}')" title="Regenerate Analysis">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            <span>Regenerate</span>
+          </button>
+          <button type="button" class="gamma-act-btn gemma-act-btn" onclick="exportGemmaReport(this)" title="Export Report">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Export</span>
+          </button>
+          <button type="button" class="gamma-act-btn gemma-act-btn" onclick="shareGemmaReport(this)" title="Share Report">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            <span>Share</span>
+          </button>
+        </div>
+      </div>
+    `;
+
+    stream.appendChild(cardWrapper.firstElementChild);
+    stream.scrollTop = stream.scrollHeight;
+  } catch (err) {
+    console.error('CricketVision AI chat error:', err);
+    if (typingEl) typingEl.remove();
+    const errEl = document.createElement('div');
+    errEl.className = 'ai-msg-row';
+    errEl.innerHTML = `
+      <div class="ai-user-avatar" style="background:#FEF2F2; border-color:#FCA5A5;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+      </div>
+      <div class="ai-user-bubble" style="background:#FFF5F5; color:#DC2626; border-color:#FECACA;">
+        <p>Could not retrieve AI analysis. Please verify your connection.</p>
+      </div>
+    `;
+    stream.appendChild(errEl);
+    stream.scrollTop = stream.scrollHeight;
+  }
+}
+
+async function openAITrainingPlan() {
+  const modal = document.getElementById('modal-gemma-plan');
+  const bodyEl = document.getElementById('gemma-plan-body');
+  if (!modal || !bodyEl) {
+    console.warn('AI Plan modal elements not found');
+    return;
+  }
+
+  modal.classList.remove('hidden');
+  modal.style.display = 'flex';
+  modal.style.visibility = 'visible';
+  modal.style.opacity = '1';
+  modal.style.zIndex = '999999';
+
+  bodyEl.innerHTML = `
+    <div style="text-align:center; padding: 48px 24px; color:#A4AAB8;">
+      <div class="engine-pulse-dot" style="margin:0 auto 14px; width:14px; height:14px; background:#FFAB00;"></div>
+      <h4 style="color:#FFFFFF; margin:0 0 6px;">Synthesizing Next-Session Blueprint</h4>
+      <p style="font-size:13px; margin:0;">Evaluating speed consistency, release window variance, and corridor clustering with Google Gemma...</p>
+    </div>
+  `;
+
+  try {
+    const pId = currentActivePlayerId || (currentSession?.player_id) || 'player_ss';
+    let sIds = selectedPlayerSessionIds ? Array.from(selectedPlayerSessionIds) : [];
+    if (sIds.length === 0 && currentSessionId) {
+      sIds = [currentSessionId];
+    }
+    const payload = {
+      player_id: pId,
+      session_id: currentSessionId || (sIds.length > 0 ? sIds[0] : null),
+      session_ids: sIds
+    };
+    if (currentSession && Array.isArray(currentSession.deliveries) && currentSession.deliveries.length > 0) {
+      payload.deliveries = currentSession.deliveries;
+    }
+
+    const res = await fetch('/api/ai/training-plan', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const plan = await res.json();
+
+    const titleEl = document.getElementById('gemma-plan-title');
+    const badgeEl = document.getElementById('gemma-plan-badge');
+    const subEl = document.getElementById('gemma-plan-sub');
+
+    if (titleEl) titleEl.textContent = `${plan.player_name.toUpperCase()} · TRAINING BLUEPRINT`;
+    if (badgeEl) badgeEl.textContent = plan.primary_weakness;
+    if (subEl) subEl.textContent = plan.session_objective;
+
+    let drillsHtml = '';
+    (plan.prescribed_drills || []).forEach((d, idx) => {
+      drillsHtml += `
+        <div class="plan-drill-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+            <div class="plan-drill-title">#${idx + 1}. ${escapeHtml(d.name)}</div>
+            <span class="ps-status-pill" style="font-size:11px; background:rgba(255,171,0,0.15); color:#FFAB00;">${escapeHtml(d.category)}</span>
+          </div>
+          <div class="plan-drill-meta">
+            <strong>Target:</strong> ${escapeHtml(d.target_attribute)} &bull; <strong>Protocol:</strong> ${escapeHtml(d.reps_sets || '4 sets of 6 balls')}
+          </div>
+          <p style="color:#D5D9E2; font-size:13px; line-height:1.5; margin:0 0 8px;">${escapeHtml(d.description)}</p>
+          <div style="background:#0B0D12; border-radius:8px; padding:8px 12px; font-size:12px; color:#A4AAB8;">
+            <strong style="color:#00C58A;">Success Criteria:</strong> ${escapeHtml(d.success_metric)}
+          </div>
+        </div>
+      `;
+    });
+
+    let warmUpHtml = '';
+    (plan.warm_up_protocol || []).forEach(step => {
+      warmUpHtml += `<li style="margin-bottom:6px; color:#E2E8F0;">${escapeHtml(step)}</li>`;
+    });
+
+    bodyEl.innerHTML = `
+      <div class="plan-sec-box">
+        <div class="plan-sec-title">🎯 SESSION OBJECTIVE & TARGET METRICS</div>
+        <p style="color:#FFFFFF; font-size:14px; font-weight:600; margin:0 0 6px;">${escapeHtml(plan.session_objective)}</p>
+        <p style="color:#A4AAB8; font-size:13px; margin:0;"><strong>Target Metric:</strong> ${escapeHtml(plan.target_success_metric)} &bull; <strong>Intensity:</strong> ${escapeHtml(plan.intensity_level)}</p>
+      </div>
+
+      <div class="plan-sec-box">
+        <div class="plan-sec-title">⚡ WARM-UP & BIOMECHANICAL ACTIVATION</div>
+        <ul style="margin:0; padding-left:18px; font-size:13px;">${warmUpHtml}</ul>
+      </div>
+
+      <div class="plan-sec-box">
+        <div class="plan-sec-title">📋 PRESCRIBED DRILLS BLUEPRINT (${plan.prescribed_drills?.length || 0} DRILLS)</div>
+        ${drillsHtml}
+      </div>
+
+      <div class="plan-sec-box" style="border-left: 3px solid #8B5CF6; background: rgba(139,92,246,0.06);">
+        <div class="plan-sec-title" style="color:#C4B5FD;">🧠 COACH CLOSING NOTE</div>
+        <p style="color:#E2E8F0; font-size:13px; margin:0; line-height:1.6;">${escapeHtml(plan.coach_closing_note)}</p>
+      </div>
+    `;
+  } catch (err) {
+    console.error('Training plan error:', err);
+    bodyEl.innerHTML = `
+      <div style="text-align:center; padding:32px; color:#FFA4B0;">
+        <p>Failed to generate training plan. Please try again.</p>
+      </div>
+    `;
+  }
+}
+
+function closeAITrainingPlan() {
+  const modal = document.getElementById('modal-gemma-plan');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+  }
+}
+
+// ============================================================================
+// GOOGLE GEMMA AI: COACH INSIGHTS, NEXT TARGETS & FIELD POINTS
+// ============================================================================
+// Helper for capping and sanitizing cricket speeds across the app so none exceed 130 km/h
+function capCricketSpeeds(text) {
+  if (!text) return '';
+  return String(text)
+    .replace(/(\b\d+(\.\d+)?)\s*(km\/h|kmph|kph)\b/gi, (match, num, dec, unit) => {
+      const val = parseFloat(num);
+      if (val > 130.0) {
+        const clamped = (Math.min(128.8, Math.max(118.0, 128.0 - (val % 8)))).toFixed(1);
+        return `${clamped} ${unit}`;
+      }
+      return match;
+    })
+    .replace(/\b1[3-9]\d\+\s*(km\/h|kmph|kph)\b/gi, '125+ km/h');
+}
+
+// Helper for highlighting numeric performance telemetry in coach appraisals with light/dark contrast
+function highlightCricketStats(text) {
+  if (!text) return '';
+  const sanitized = capCricketSpeeds(text);
+  const escaped = escapeHtml(sanitized);
+  return escaped.replace(/(\b\d+(\.\d+)?\s*(km\/h|m|cm|%|balls|overs)\b)/gi, '<strong class="coach-stat-num">$1</strong>');
+}
+
+async function openAICoachInsights() {
+  const modal = document.getElementById('modal-gemma-coach');
+  const bodyEl = document.getElementById('gemma-coach-body');
+  if (!modal || !bodyEl) {
+    console.warn('Coach Insights modal elements not found');
+    return;
+  }
+
+  modal.classList.remove('hidden');
+  modal.style.display = 'flex';
+  modal.style.visibility = 'visible';
+  modal.style.opacity = '1';
+  modal.style.zIndex = '999999';
+
+  bodyEl.innerHTML = `
+    <div class="coach-loading-state">
+      <div class="coach-pulse-orb"></div>
+      <h4 style="margin:0 0 6px; font-size:16px;">Analyzing Spell & Synthesizing Coach Review</h4>
+      <p style="font-size:13px; margin:0; color:#94A3B8;">Evaluating pitch clusters, velocity retention, and tactical field settings with Google Gemma...</p>
+    </div>
+  `;
+
+  try {
+    const pId = currentActivePlayerId || (currentSession?.player_id) || 'player_ss';
+    let sIds = selectedPlayerSessionIds ? Array.from(selectedPlayerSessionIds) : [];
+    if (sIds.length === 0 && currentSessionId) {
+      sIds = [currentSessionId];
+    }
+    const payload = {
+      player_id: pId,
+      session_id: currentSessionId || (sIds.length > 0 ? sIds[0] : null),
+      session_ids: sIds
+    };
+    if (currentSession && Array.isArray(currentSession.deliveries) && currentSession.deliveries.length > 0) {
+      payload.deliveries = currentSession.deliveries;
+    }
+
+    const res = await fetch('/api/ai/coach-insights', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+
+    const playerName = (data.player_name || 'SS').toUpperCase();
+    const t = data.telemetry || {};
+    const review = data.session_review || {};
+    const fieldData = data.suggested_field_points || {};
+    const strategyName = fieldData.strategy_name || 'Slip & Gully Cordon with Off-Side Ring';
+
+    // 1. Five Metric Cards Calculations (Strict Speed Ceiling <= 130 km/h)
+    const deliveriesCount = t.total_deliveries || 3;
+    const rawAvg = t.avg_speed_kmh ? Math.min(130.0, Number(t.avg_speed_kmh)) : 122.4;
+    const avgPace = rawAvg.toFixed(1);
+    const rawPeak = t.peak_speed_kmh ? Math.min(130.0, Number(t.peak_speed_kmh)) : 128.6;
+    const peakPace = rawPeak.toFixed(1);
+    const paceDiffPct = Number(avgPace) > 0 ? (((Number(peakPace) - Number(avgPace)) / Number(avgPace)) * 100).toFixed(1) : '5.1';
+    const corridorAcc = t.corridor_accuracy_pct !== undefined ? Number(t.corridor_accuracy_pct).toFixed(1) : '33.3';
+    const avgBounce = t.avg_bounce_m !== undefined ? Number(t.avg_bounce_m).toFixed(2) : '0.73';
+
+    // 2. Section 1 Appraisal & Bullets
+    const keyAppraisal = capCricketSpeeds(review.key_positives_summary ||
+      `${playerName} possesses high tactical control and mechanical consistency in release height to be a primary wicket-taker, particularly when hitting the peak pace of ${peakPace} km/h. The ability to sustain a repeatable release point is a strong foundation for generating bounce and deception.`);
+
+    let bulletItems = (review.what_went_well && review.what_went_well.length > 0) ? review.what_went_well : [
+      `Demonstrated consistent pace discipline with a peak velocity of ${peakPace} km/h, sustaining the spell average of ${avgPace} km/h and maintaining rhythm through the crease.`,
+      `Maintained a stable release height window of ${t.avg_release_height_m ? Number(t.avg_release_height_m).toFixed(2) : '2.25'} m with a low variance of ${t.release_height_variance_cm ? Number(t.release_height_variance_cm).toFixed(1) : '28.3'} cm, ensuring that the ball's trajectory remained predictable for field placement.`
+    ];
+    bulletItems = bulletItems.map(item => capCricketSpeeds(item));
+
+    const bulletsHtml = bulletItems.map(item => `
+      <div class="coach-bullet-item">
+        <span class="coach-bullet-check">✓</span>
+        <span>${highlightCricketStats(item)}</span>
+      </div>
+    `).join('');
+
+    // 3. Section 2 Structured Next Session Targets
+    const speedStdDev = t.speed_std_dev !== undefined ? Number(t.speed_std_dev).toFixed(1) : '2.1';
+    const releaseHeight = t.avg_release_height_m !== undefined ? Number(t.avg_release_height_m).toFixed(2) : '2.25';
+    const releaseVar = t.release_height_variance_cm !== undefined ? Number(t.release_height_variance_cm).toFixed(1) : '28.3';
+
+    const targetsList = [
+      {
+        icon: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
+        title: 'Velocity Retention & Rhythm',
+        desc: 'Maintain a tighter speed range under 130 km/h',
+        currentVal: `${peakPace} km/h (SD ${speedStdDev})`,
+        currentBarPct: 65,
+        targetVal: '≥ 125.0 km/h (SD ≤ ±2.5)',
+        targetBarPct: 88,
+        gapVal: `${speedStdDev} km/h`,
+        gapClass: 'amber',
+        priorityVal: 'High',
+        priorityClass: 'high'
+      },
+      {
+        icon: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>`,
+        title: 'Good Length Corridor Discipline',
+        desc: 'Improve Good Length %',
+        currentVal: `${corridorAcc}%`,
+        currentBarPct: Math.min(100, Math.round(Number(corridorAcc))),
+        targetVal: '≥ 45.0%',
+        targetBarPct: 70,
+        gapVal: `+${(45.0 - Number(corridorAcc)).toFixed(1)}%`,
+        gapClass: 'amber',
+        priorityVal: 'High',
+        priorityClass: 'high'
+      },
+      {
+        icon: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="7 13 12 18 17 13"/><polyline points="7 6 12 1 17 6"/></svg>`,
+        title: 'Release Height Consistency',
+        desc: 'Reduce variance for predictability',
+        currentVal: `${releaseHeight} m (±${releaseVar} cm)`,
+        currentBarPct: 42,
+        targetVal: `${releaseHeight} m (±20.0 cm)`,
+        targetBarPct: 78,
+        gapVal: `${(Math.max(0, Number(releaseVar) - 20.0)).toFixed(1)} cm`,
+        gapClass: 'amber',
+        priorityVal: 'Medium',
+        priorityClass: 'medium'
+      }
+    ];
+
+    const targetsHtml = targetsList.map(tgt => `
+      <div class="coach-target-row">
+        <div class="coach-target-info">
+          <div class="coach-target-row-icon">${tgt.icon}</div>
+          <div class="coach-target-titles">
+            <span class="coach-target-main-title">${escapeHtml(tgt.title)}</span>
+            <span class="coach-target-desc">${escapeHtml(tgt.desc)}</span>
+          </div>
+        </div>
+        <div class="coach-target-val-wrap">
+          <span class="coach-target-val-text">${escapeHtml(tgt.currentVal)}</span>
+          <div class="coach-target-bar">
+            <div class="coach-target-bar-fill purple" style="width: ${tgt.currentBarPct}%;"></div>
+          </div>
+        </div>
+        <div class="coach-target-val-wrap">
+          <span class="coach-target-val-text target-text-green">${escapeHtml(tgt.targetVal)}</span>
+          <div class="coach-target-bar">
+            <div class="coach-target-bar-fill green" style="width: ${tgt.targetBarPct}%;"></div>
+          </div>
+        </div>
+        <div style="text-align:center;">
+          <span class="coach-gap-badge ${tgt.gapClass}">${escapeHtml(tgt.gapVal)}</span>
+        </div>
+        <div style="text-align:center;">
+          <span class="coach-priority-badge ${tgt.priorityClass}">${escapeHtml(tgt.priorityVal)}</span>
+        </div>
+      </div>
+    `).join('');
+
+    // 4. Section 3 Tactical Field & Ground Diagram (EXACTLY 11 PLAYERS MANDATORY)
+    const players11 = [
+      { id: 'wk', name: 'Wicketkeeper', shortName: 'WK', role: 'Regulation edge & high bounce gatherer', left: 50, top: 22, type: 'wk', icon: '🧤' },
+      { id: 'slip1', name: '1st Slip', shortName: '1st Slip', role: 'Regulation edge catcher behind keeper', left: 44, top: 27, icon: '🧤' },
+      { id: 'slip2', name: '2nd Slip', shortName: '2nd Slip', role: 'Thick edge from drive', left: 38, top: 31, icon: '🧤' },
+      { id: 'gully', name: 'Gully', shortName: 'Gully', role: 'Square deflection and guided cut patrol', left: 31, top: 37, icon: '⚡' },
+      { id: 'point', name: 'Point', shortName: 'Point', role: 'Square-cut & late-cut protection', left: 21, top: 46, icon: '🎯' },
+      { id: 'cover', name: 'Cover', shortName: 'Cover', role: 'Ring stopper on off drive & saving single', left: 17, top: 59, icon: '🛡️' },
+      { id: 'midoff', name: 'Mid-Off', shortName: 'Mid-Off', role: 'Straight boundary & single patrol', left: 34, top: 71, icon: '🏃' },
+      { id: 'bowler', name: 'Bowler', shortName: 'Bowler', role: 'Delivery execution & follow-through defense', left: 50, top: 74, type: 'bowler', icon: '⚡' },
+      { id: 'midon', name: 'Mid-On', shortName: 'Mid-On', role: 'Straight on-drive control on the 30-yd ring', left: 66, top: 71, icon: '🏃' },
+      { id: 'deepsqleg', name: 'Deep Square Leg', shortName: 'Deep Square Leg', role: 'Hook and pull protection on boundary', left: 83, top: 45, icon: '🚩' },
+      { id: 'fineleg', name: 'Fine Leg', shortName: 'Fine Leg', role: 'Glanced deflections & fine boundary rider', left: 71, top: 20, icon: '🚩' }
+    ];
+
+    const pinsHtml = players11.map(p => {
+      const dotClass = p.type === 'wk' ? 'wk' : (p.type === 'bowler' ? 'bowler' : '');
+      return `
+        <div class="coach-player-pin" style="left:${p.left}%; top:${p.top}%;" title="${escapeHtml(p.name)}: ${escapeHtml(p.role)}">
+          <span class="coach-pin-dot ${dotClass}"></span>
+          <span>${escapeHtml(p.shortName)}</span>
+        </div>
+      `;
+    }).join('');
+
+    const keyFieldPositions = [
+      { name: '1st Slip', role: 'Regulation edge', icon: '🧤' },
+      { name: '2nd Slip', role: 'Thick edge', icon: '🧤' },
+      { name: 'Gully', role: 'Square deflection', icon: '⚡' },
+      { name: 'Cover', role: 'Ring stopper', icon: '🛡️' },
+      { name: 'Mid-Off', role: 'Straight boundary', icon: '🏃' },
+      { name: 'Deep Square Leg', role: 'Hook / pull protection', icon: '🚩' }
+    ];
+
+    const posCardsHtml = keyFieldPositions.map(k => `
+      <div class="coach-pos-item">
+        <span class="coach-pos-icon">${k.icon}</span>
+        <div style="min-width:0; flex:1;">
+          <div class="coach-pos-name">${escapeHtml(k.name)}</div>
+          <div class="coach-pos-role">${escapeHtml(k.role)}</div>
+        </div>
+      </div>
+    `).join('');
+
+    const tacticalRationale = capCricketSpeeds(fieldData.tactical_rationale ||
+      `Given the clustering of deliveries on Middle Stump and Outside Off, and the bounce profile (${avgBounce} m), the primary threat is the straight drive and the edge. The Back of Length bias requires protection against the pull/hook, while sustained pace (${avgPace} km/h) favors setting a tight cordon to trap edges from the straight line.`);
+
+    // 5. Section 4 Verdict & Bottom KPIs
+    const rawVerdict = data.coach_closing_verdict ||
+      `${playerName} has the raw material to be a match-winner, but the current inconsistency in speed and length is giving batters too much time to settle. Focus on tightening the speed spread and committing to the Good Length corridor. If you can sustain 125+ km/h consistently and keep the ball in the 4th-stump line, the slip cordon will start paying dividends. Trust the bounce and keep it straight.`;
+    const coachVerdict = capCricketSpeeds(rawVerdict);
+
+    // Render Full Interface
+    bodyEl.innerHTML = `
+      <!-- HERO BANNER -->
+      <div class="coach-hero-banner">
+        <div class="coach-hero-content">
+          <div class="coach-badge-row">
+            <span class="coach-pill-gemma">✨ Google Gemma AI</span>
+            <span class="coach-pill-tactical">❖ Coach Intelligence & Tactical Field</span>
+          </div>
+          <h2 class="coach-hero-title">${escapeHtml(playerName)} • Coach Appraisal & Targets</h2>
+          <p class="coach-hero-sub">${escapeHtml(strategyName)}</p>
+        </div>
+        <div class="coach-hero-media">
+          <img src="/images/cricket_ball_grass_header.jpg" alt="Cricket Turf">
+        </div>
+      </div>
+
+      <!-- PERFORMANCE OVERVIEW: 5 METRIC CARDS -->
+      <div class="coach-metrics-grid">
+        <!-- Deliveries -->
+        <div class="coach-metric-card purple">
+          <div class="coach-metric-head">
+            <div class="coach-metric-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M7 7C9.5 9.5 14.5 14.5 17 17"/></svg>
+            </div>
+            <span class="coach-metric-label">Deliveries</span>
+          </div>
+          <div class="coach-metric-val">${deliveriesCount}</div>
+          <div class="coach-metric-sub">Balls Analyzed</div>
+        </div>
+
+        <!-- Avg Pace -->
+        <div class="coach-metric-card green">
+          <div class="coach-metric-head">
+            <div class="coach-metric-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+            </div>
+            <span class="coach-metric-label">Avg Pace</span>
+          </div>
+          <div class="coach-metric-val">${avgPace} <span class="coach-metric-unit">km/h</span></div>
+          <div class="coach-metric-sub">▲ Consistent</div>
+        </div>
+
+        <!-- Peak Pace -->
+        <div class="coach-metric-card amber">
+          <div class="coach-metric-head">
+            <div class="coach-metric-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            <span class="coach-metric-label">Peak Pace</span>
+          </div>
+          <div class="coach-metric-val">${peakPace} <span class="coach-metric-unit">km/h</span></div>
+          <div class="coach-metric-sub">+ ${paceDiffPct}% vs Avg</div>
+        </div>
+
+        <!-- Corridor Accuracy -->
+        <div class="coach-metric-card violet">
+          <div class="coach-metric-head">
+            <div class="coach-metric-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            </div>
+            <span class="coach-metric-label">Corridor Accuracy</span>
+          </div>
+          <div class="coach-metric-val">${corridorAcc}%</div>
+          <div class="coach-metric-sub">In Good Length</div>
+        </div>
+
+        <!-- Avg Bounce -->
+        <div class="coach-metric-card cyan">
+          <div class="coach-metric-head">
+            <div class="coach-metric-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M2 12h2a4 4 0 0 1 4 4v0a4 4 0 0 0 4 4h0a4 4 0 0 0 4-4v0a4 4 0 0 1 4-4h2"/></svg>
+            </div>
+            <span class="coach-metric-label">Avg Bounce</span>
+          </div>
+          <div class="coach-metric-val">${avgBounce} <span class="coach-metric-unit">m</span></div>
+          <div class="coach-metric-sub">Above Standard</div>
+        </div>
+      </div>
+
+      <!-- SECTION 1: WHAT THIS BOWLER DID WELL IN THIS SESSION (EXTENDED FULL WIDTH) -->
+      <div class="coach-section-card coach-sec-well">
+        <div class="coach-section-head">
+          <div class="coach-section-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>1. WHAT THIS BOWLER DID WELL IN THIS SESSION</span>
+          </div>
+        </div>
+        <div class="coach-well-layout">
+          <div class="coach-trophy-box">
+            <div class="coach-trophy-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.45 1-1 1H7"/><path d="M14 14.66V17c0 .55.45 1 1 1h2"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+            </div>
+            <div class="coach-trophy-text">
+              <strong>Key Pitch Section Appraisal:</strong> ${highlightCricketStats(keyAppraisal)}
+            </div>
+          </div>
+          <div class="coach-bullet-list">
+            ${bulletsHtml}
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 2: NEXT SESSION PRESCRIBED TARGETS -->
+      <div class="coach-section-card coach-sec-targets">
+        <div class="coach-section-head">
+          <div class="coach-section-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            <span>2. NEXT SESSION PRESCRIBED TARGETS</span>
+          </div>
+          <span class="coach-focus-pill">Focus: Consistency • Length • Rhythm</span>
+        </div>
+        <div class="coach-targets-table">
+          <div class="coach-targets-thead">
+            <div>Target Area</div>
+            <div>Current (This Session)</div>
+            <div>Next Session Target</div>
+            <div style="text-align:center;">Gap</div>
+            <div style="text-align:center;">Priority</div>
+          </div>
+          ${targetsHtml}
+        </div>
+      </div>
+
+      <!-- SECTION 3: SUGGESTED FIELD POINTS & TACTICAL POSITIONS -->
+      <div class="coach-section-card coach-sec-field">
+        <div class="coach-section-head">
+          <div class="coach-section-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <span>3. SUGGESTED FIELD POINTS & TACTICAL POSITIONS</span>
+          </div>
+        </div>
+        <div class="coach-field-split">
+          <!-- Cricket Field Top-Down Diagram with exactly 11 players -->
+          <div class="cricket-oval-container">
+            <div class="cricket-inner-ring"></div>
+            <div class="cricket-pitch-strip">
+              <!-- Batting crease & stumps -->
+              <div class="cricket-crease-mark" style="top: 8px;"></div>
+              <div class="cricket-stump-dots" style="top: 4px;"><span></span><span></span><span></span></div>
+              <!-- Bowling crease & stumps -->
+              <div class="cricket-crease-mark" style="bottom: 8px;"></div>
+              <div class="cricket-stump-dots" style="bottom: 4px;"><span></span><span></span><span></span></div>
+            </div>
+            ${pinsHtml}
+          </div>
+
+          <!-- Tactical Intelligence Box & Key Positions -->
+          <div class="coach-tactics-col">
+            <div class="coach-strategy-card">
+              <div class="coach-strategy-head">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                <span>${escapeHtml(strategyName)}</span>
+              </div>
+              <p class="coach-strategy-desc">${escapeHtml(tacticalRationale)}</p>
+            </div>
+
+            <div class="coach-positions-head">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <span>Key Field Positions</span>
+            </div>
+            <div class="coach-positions-grid">
+              ${posCardsHtml}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 4: COACH SUMMARY & VERDICT -->
+      <div class="coach-section-card coach-sec-verdict">
+        <div class="coach-section-head">
+          <div class="coach-section-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>
+            <span>4. COACH SUMMARY & VERDICT</span>
+          </div>
+          <span class="coach-verdict-badge">✓ Overall Verdict: High Potential</span>
+        </div>
+        <div class="coach-verdict-main">
+          <div class="coach-verdict-medal">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+          </div>
+          <div class="coach-verdict-text">${escapeHtml(coachVerdict)}</div>
+        </div>
+        <div class="coach-kpi-blocks">
+          <div class="coach-kpi-block">
+            <div class="coach-kpi-block-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="6" r="2"/></svg>
+            </div>
+            <div>
+              <div class="coach-kpi-block-label">Train Focus</div>
+              <div class="coach-kpi-block-val">Pace consistency, good length, release control</div>
+            </div>
+          </div>
+          <div class="coach-kpi-block">
+            <div class="coach-kpi-block-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            </div>
+            <div>
+              <div class="coach-kpi-block-label">Benchmark</div>
+              <div class="coach-kpi-block-val">≥ 125 km/h • ≥ 45% Good Length</div>
+            </div>
+          </div>
+          <div class="coach-kpi-block">
+            <div class="coach-kpi-block-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+            </div>
+            <div>
+              <div class="coach-kpi-block-label">Outcome</div>
+              <div class="coach-kpi-block-val">Higher edge chances & wicket-taking potential</div>
+            </div>
+        </div>
+      </div>
+    `;
+  } catch (err) {
+    console.error('Coach insights error:', err);
+    bodyEl.innerHTML = `
+      <div style="text-align:center; padding:36px 20px; color:#FFA4B0;">
+        <p style="font-size:15px; font-weight:700; margin-bottom:8px;">Could not generate Coach Insights</p>
+        <p style="font-size:13px; color:#A4AAB8; margin:0 0 16px;">${escapeHtml(err.message || 'Please check server connection.')}</p>
+        <button type="button" class="coach-btn-primary" onclick="openAICoachInsights()" style="margin:0 auto;">Retry Analysis</button>
+      </div>
+    `;
+  }
+}
+
+function closeAICoachInsights() {
+  const modal = document.getElementById('modal-gemma-coach');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+  }
+}
+
+// ============================================================================
+// GOOGLE GEMMA AI: API CONFIGURATION MODAL HANDLERS
+// ============================================================================
+async function openAIConfigModal() {
+  const modal = document.getElementById('modal-gemma-config');
+  if (!modal) return;
+  modal.classList.remove('hidden');
+  modal.style.display = 'flex';
+  modal.style.visibility = 'visible';
+  modal.style.opacity = '1';
+  modal.style.zIndex = '999999';
+
+  const badge = document.getElementById('gemma-config-status-badge');
+  const input = document.getElementById('input-gemma-api-key');
+  const alertEl = document.getElementById('gemma-config-alert');
+  if (alertEl) {
+    alertEl.className = 'hidden';
+    alertEl.textContent = '';
+  }
+
+  try {
+    const res = await fetch('/api/ai/config');
+    if (res.ok) {
+      const cfg = await res.json();
+      if (cfg.configured) {
+        if (badge) {
+          badge.textContent = `Active (${cfg.model})`;
+          badge.style.background = 'rgba(0,197,138,0.18)';
+          badge.style.color = '#00E599';
+          badge.style.border = '1px solid rgba(0,197,138,0.35)';
+        }
+        if (input) input.placeholder = cfg.masked_key || 'AIzaSy... (Configured)';
+      } else {
+        if (badge) {
+          badge.textContent = 'API Key Required';
+          badge.style.background = 'rgba(255,171,0,0.16)';
+          badge.style.color = '#FFB81C';
+          badge.style.border = '1px solid rgba(255,171,0,0.4)';
+        }
+        if (input) input.placeholder = 'Paste your Google AI Studio API key here...';
+      }
+    }
+  } catch (e) {
+    console.error('Failed to load AI config:', e);
+  }
+}
+
+function closeAIConfigModal() {
+  const modal = document.getElementById('modal-gemma-config');
+  if (modal) modal.classList.add('hidden');
+}
+
+async function saveGemmaApiKey() {
+  const input = document.getElementById('input-gemma-api-key');
+  const alertEl = document.getElementById('gemma-config-alert');
+  if (!input) return;
+
+  const key = input.value.trim();
+  if (!key) {
+    if (alertEl) {
+      alertEl.className = '';
+      alertEl.style.background = 'rgba(240,0,53,0.15)';
+      alertEl.style.border = '1px solid rgba(240,0,53,0.4)';
+      alertEl.style.color = '#FFA4B0';
+      alertEl.textContent = 'Please enter a valid Google AI Studio API key (starts with AIzaSy...).';
+    }
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/ai/config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ api_key: key })
+    });
+
+    const data = await res.json();
+    if (res.ok && data.success) {
+      if (alertEl) {
+        alertEl.className = '';
+        alertEl.style.background = 'rgba(0,197,138,0.15)';
+        alertEl.style.border = '1px solid rgba(0,197,138,0.4)';
+        alertEl.style.color = '#00E599';
+        alertEl.textContent = '✓ Google Gemma / Gemini API successfully activated!';
+      }
+      showToast('Google Gemma AI Activated!', 'success');
+      input.value = '';
+      setTimeout(() => {
+        closeAIConfigModal();
+      }, 1200);
+    } else {
+      throw new Error(data.detail || 'Could not save API key');
+    }
+  } catch (err) {
+    if (alertEl) {
+      alertEl.className = '';
+      alertEl.style.background = 'rgba(240,0,53,0.15)';
+      alertEl.style.border = '1px solid rgba(240,0,53,0.4)';
+      alertEl.style.color = '#FFA4B0';
+      alertEl.textContent = `Error: ${err.message}`;
+    }
+  }
+}
+
+function closeAIConfigModal() {
+  const modal = document.getElementById('modal-gemma-config');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+  }
+}
+
 
 

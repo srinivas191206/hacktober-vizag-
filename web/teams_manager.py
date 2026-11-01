@@ -717,7 +717,13 @@ def get_player_sessions(player_id: str):
         spid = data.get("player_id")
         sbname = (data.get("bowler_name") or "").lower().strip()
 
-        if spid == player_id or (not spid and sbname == pname):
+        is_player_match = (
+            spid == player_id or
+            (player_id == "player_ss" and (spid in ["player_ss", "player_srinivas"] or sbname in ["ss", "s.s", "s. s.", "srinivas", "t. srinivas", "thalada", "admin", "captain"] or not spid)) or
+            (not spid and (sbname == pname or (player_id == "player_ss" and "srinivas" in sbname)))
+        )
+
+        if is_player_match:
             deliveries = data.get("deliveries", [])
             sample_thumbnail = ""
             for d in deliveries:
@@ -775,12 +781,12 @@ def list_player_reports(player_id=None):
                 "analysis_date": "Oct 29, 2026",
                 "created_at": "Oct 29, 2026 11:45 AM",
                 "status": "Verified",
-                "summary": "Full tracking data for 4 deliveries across 2 spells. Good length channel discipline around 4th stump with peak speed of 96.9 mph (156 km/h) and 78% stumps threat rating.",
+                "summary": "Full tracking data for 4 deliveries across 2 spells. Good length channel discipline around 4th stump with peak speed of 79.9 mph (128.6 km/h) and 78% stumps threat rating.",
                 "metrics": {
                     "total_deliveries": 4,
                     "deliveries_with_tracking": 4,
-                    "avg_speed_mph": 86.8,
-                    "peak_speed_mph": 96.9,
+                    "avg_speed_mph": 76.0,
+                    "peak_speed_mph": 79.9,
                     "good_length_pct": 75,
                     "stumps_threat_pct": 82
                 },
@@ -831,3 +837,62 @@ def create_report(data):
     reports.insert(0, new_report)
     _save_json(REPORTS_FILE, reports)
     return new_report
+
+def update_player_from_completed_session(player_id: str, session: dict) -> dict:
+    """Updates player profile metrics (spells count, peak speed, reports) upon spell completion."""
+    init_default_teams_and_players()
+    players = _load_json(PLAYERS_FILE, [])
+    updated_player = None
+
+    # Calculate session stats
+    deliveries = session.get("deliveries", [])
+    speeds_kph = [float(d["speed_kph"]) for d in deliveries if d.get("speed_kph") and float(d["speed_kph"]) > 0]
+    speeds_mph = [float(d["speed_mph"]) for d in deliveries if d.get("speed_mph") and float(d["speed_mph"]) > 0]
+    if not speeds_kph and speeds_mph:
+        speeds_kph = [round(s * 1.60934, 1) for s in speeds_mph]
+    sess_peak_kph = max(speeds_kph) if speeds_kph else 0.0
+
+    # Count all sessions on disk belonging to this player
+    player_sessions = get_player_sessions(player_id)
+    total_spells = len(player_sessions)
+
+    target_pid = "player_ss" if player_id in ["player_ss", "player_srinivas"] else player_id
+    for p in players:
+        if p["id"] == target_pid or (target_pid == "player_ss" and p["name"].lower() in ["ss"]):
+            current_spells = p.get("spells_count", 0)
+            p["spells_count"] = max(current_spells + 1, total_spells)
+            p["sessions_count"] = p["spells_count"]
+            if sess_peak_kph > p.get("peak_speed_kph", 0.0):
+                p["peak_speed_kph"] = sess_peak_kph
+            updated_player = p
+            break
+
+    if updated_player:
+        _save_json(PLAYERS_FILE, players)
+        # Also sync to web/data/players.json if it exists
+        web_players_file = os.path.join(os.path.dirname(__file__), "data", "players.json")
+        if os.path.exists(web_players_file):
+            _save_json(web_players_file, players)
+
+    # Auto-generate a report for this completed spell
+    try:
+        report_data = {
+            "name": f"Spell Analysis - {session.get('name', 'Bowling Spell')}",
+            "player_id": player_id,
+            "player_name": updated_player.get("name", "ss") if updated_player else "ss",
+            "team_id": updated_player.get("team_id", "team_trajecta_squad") if updated_player else "team_trajecta_squad",
+            "team_name": "Coastal Warriors",
+            "session_count": 1,
+            "sessions_included": [session.get("id")],
+            "metrics": {
+                "total_deliveries": len(deliveries),
+                "peak_speed_mph": round(sess_peak_kph / 1.60934, 1) if sess_peak_kph else 0.0,
+                "peak_speed_kph": sess_peak_kph,
+                "stumps_threat_pct": updated_player.get("stumps_threat_pct", 87) if updated_player else 87
+            }
+        }
+        create_report(report_data)
+    except Exception as e:
+        print(f"[Teams Manager] Auto-create report note: {e}")
+
+    return updated_player or {}

@@ -11,8 +11,8 @@
       "ball_number": 1,
       "timestamp": "11:24:32",
       "filename": "WhatsApp Video 2026-10-27 at 13.51.55.mp4",
-      "video_url": "/static/outputs/detected_ball_See_ball_hit_ball.-2.mp4",
-      "download_url": "/api/download?file=ball_track_1793186668.mp4&filename=detected_ball_WhatsApp Video 2026-10-27 at 13.51.55.mp4",
+      "video_url": null,
+      "download_url": null,
       "speed_mph": 74.0,
       "speed_kph": 119.1,
       "swing_sf": 0.7,
@@ -349,17 +349,17 @@
       "bounce_frame": 27,
       "end_frame": 37,
       "frames_processed": 38,
-      "video_path": "web/static/outputs/detected_ball_See_ball_hit_ball.-2.mp4",
+      "video_path": null,
       "pitch_x": -0.447,
       "pitch_y": 13.1,
-      "thumbnail_url": "/static/outputs/thumbs/detected_ball_See_ball_hit_ball.-2.jpg"
+      "thumbnail_url": null
     },
     {
       "ball_number": 2,
       "timestamp": "11:28:11",
       "filename": "WhatsApp Video 2026-10-27 at 13.52.09.mp4",
-      "video_url": "/static/outputs/detected_ball_See_ball_hit_ball..mp4",
-      "download_url": "/api/download?file=ball_track_1793186890.mp4&filename=detected_ball_WhatsApp Video 2026-10-27 at 13.52.09.mp4",
+      "video_url": null,
+      "download_url": null,
       "speed_mph": 72.7,
       "speed_kph": 117.0,
       "swing_sf": 0.1,
@@ -696,10 +696,10 @@
       "bounce_frame": 39,
       "end_frame": 40,
       "frames_processed": 42,
-      "video_path": "web/static/outputs/detected_ball_See_ball_hit_ball..mp4",
+      "video_path": null,
       "pitch_x": -0.281,
       "pitch_y": 16.96,
-      "thumbnail_url": "/static/outputs/thumbs/detected_ball_See_ball_hit_ball..jpg"
+      "thumbnail_url": null
     }
   ],
   "stats": {
@@ -728,13 +728,15 @@
   "venue": "Main Ground",
   "pitch_type": "Turf",
   "recording_status": "Completed",
-  "video_status": "Video Available",
-  "video_duration": "--:--",
+  "video_status": "No Video",
+  "video_duration": null,
   "notes": "High-speed new ball delivery analysis.",
-  "sample_thumbnail_url": "/static/outputs/thumbs/detected_ball_See_ball_hit_ball.-2.jpg",
-  "video_clips_count": 2,
+  "sample_thumbnail_url": null,
+  "video_clips_count": 0,
   "deliveries_count": 2,
   "avg_speed_mph": 73.3,
   "max_speed_mph": 74.0,
-  "sample_video_url": "/static/outputs/detected_ball_See_ball_hit_ball.-2.mp4"
+  "sample_video_url": null,
+  "video_url": null,
+  "video_path": null
 }

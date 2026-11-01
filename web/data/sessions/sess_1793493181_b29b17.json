@@ -1,0 +1,1647 @@
+{
+  "id": "sess_1793493181_b29b17",
+  "name": "Spell - Good Length Channel (Nov 1)",
+  "bowler_name": "srinivas",
+  "bowling_type": "Right-arm Fast",
+  "target_balls": 5,
+  "has_wickets": true,
+  "player_id": null,
+  "team_id": null,
+  "squad_id": null,
+  "created_at": "2026-11-01 00:33:01 UTC",
+  "updated_at": "2026-11-01 00:36:15 UTC",
+  "deliveries": [
+    {
+      "ball_number": 1,
+      "timestamp": "00:33:33",
+      "filename": "WhatsApp Video 2026-10-25 at 11.46.28.mp4",
+      "video_url": "/static/outputs/ball_track_1793493205.mp4",
+      "download_url": "/api/download?file=ball_track_1793493205.mp4&filename=detected_ball_WhatsApp Video 2026-10-25 at 11.46.28.mp4",
+      "speed_mph": 96.4,
+      "speed_kph": 155.1,
+      "swing_sf": 0.1,
+      "spin_deg": 8.8,
+      "distance_from_crease_m": 6.79,
+      "length_zone": "Back of Length",
+      "lateral_line": "Outside Off",
+      "bounce_coord": [
+        191.85941314697266,
+        498.0616149902344,
+        127
+      ],
+      "trajectory_3d": {
+        "points_meters": [
+          {
+            "x": -1.8,
+            "y": 1.285,
+            "z": 2.6
+          },
+          {
+            "x": -1.726,
+            "y": 1.984,
+            "z": 2.454
+          },
+          {
+            "x": -1.576,
+            "y": 3.378,
+            "z": 2.156
+          },
+          {
+            "x": -1.499,
+            "y": 4.073,
+            "z": 2.003
+          },
+          {
+            "x": -1.422,
+            "y": 4.767,
+            "z": 1.847
+          },
+          {
+            "x": -1.344,
+            "y": 5.458,
+            "z": 1.69
+          },
+          {
+            "x": -1.266,
+            "y": 6.149,
+            "z": 1.53
+          },
+          {
+            "x": -1.186,
+            "y": 6.838,
+            "z": 1.367
+          },
+          {
+            "x": -1.106,
+            "y": 7.525,
+            "z": 1.202
+          },
+          {
+            "x": -1.024,
+            "y": 8.211,
+            "z": 1.035
+          },
+          {
+            "x": -0.942,
+            "y": 8.896,
+            "z": 0.866
+          },
+          {
+            "x": -0.86,
+            "y": 9.579,
+            "z": 0.694
+          },
+          {
+            "x": -0.776,
+            "y": 10.26,
+            "z": 0.519
+          },
+          {
+            "x": -0.692,
+            "y": 10.94,
+            "z": 0.343
+          },
+          {
+            "x": -0.607,
+            "y": 11.619,
+            "z": 0.164
+          },
+          {
+            "x": -0.551,
+            "y": 13.269,
+            "z": 0.15
+          },
+          {
+            "x": -0.523,
+            "y": 13.865,
+            "z": 0.222
+          },
+          {
+            "x": -0.494,
+            "y": 14.457,
+            "z": 0.291
+          },
+          {
+            "x": -0.465,
+            "y": 15.046,
+            "z": 0.357
+          },
+          {
+            "x": -0.405,
+            "y": 16.215,
+            "z": 0.48
+          },
+          {
+            "x": -0.374,
+            "y": 16.796,
+            "z": 0.537
+          },
+          {
+            "x": -0.278,
+            "y": 18.518,
+            "z": 0.69
+          },
+          {
+            "x": -0.245,
+            "y": 19.087,
+            "z": 0.735
+          },
+          {
+            "x": -0.212,
+            "y": 19.652,
+            "z": 0.777
+          }
+        ],
+        "release": {
+          "x": -1.6,
+          "y": 1.35,
+          "z": 2.45
+        },
+        "bounce": {
+          "x": -0.562,
+          "y": 12.11,
+          "z": 0.0
+        },
+        "arrival": {
+          "x": -0.208,
+          "y": 19.8,
+          "z": 0.76
+        },
+        "frame_speeds": [
+          {
+            "frame": 112,
+            "t_sec": 0.0,
+            "speed_mph": 96.4,
+            "speed_kph": 155.2,
+            "pos_3d": [
+              -1.8,
+              1.285,
+              2.6
+            ],
+            "phase": "release"
+          },
+          {
+            "frame": 113,
+            "t_sec": 0.0167,
+            "speed_mph": 96.3,
+            "speed_kph": 155.0,
+            "pos_3d": [
+              -1.726,
+              1.984,
+              2.454
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 115,
+            "t_sec": 0.05,
+            "speed_mph": 96.1,
+            "speed_kph": 154.6,
+            "pos_3d": [
+              -1.576,
+              3.378,
+              2.156
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 116,
+            "t_sec": 0.0667,
+            "speed_mph": 96.0,
+            "speed_kph": 154.5,
+            "pos_3d": [
+              -1.499,
+              4.073,
+              2.003
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 117,
+            "t_sec": 0.0833,
+            "speed_mph": 95.9,
+            "speed_kph": 154.3,
+            "pos_3d": [
+              -1.422,
+              4.767,
+              1.847
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 118,
+            "t_sec": 0.1,
+            "speed_mph": 95.8,
+            "speed_kph": 154.1,
+            "pos_3d": [
+              -1.344,
+              5.458,
+              1.69
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 119,
+            "t_sec": 0.1167,
+            "speed_mph": 95.6,
+            "speed_kph": 153.9,
+            "pos_3d": [
+              -1.266,
+              6.149,
+              1.53
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 120,
+            "t_sec": 0.1333,
+            "speed_mph": 95.5,
+            "speed_kph": 153.8,
+            "pos_3d": [
+              -1.186,
+              6.838,
+              1.367
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 121,
+            "t_sec": 0.15,
+            "speed_mph": 95.4,
+            "speed_kph": 153.6,
+            "pos_3d": [
+              -1.106,
+              7.525,
+              1.202
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 122,
+            "t_sec": 0.1667,
+            "speed_mph": 95.3,
+            "speed_kph": 153.4,
+            "pos_3d": [
+              -1.024,
+              8.211,
+              1.035
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 123,
+            "t_sec": 0.1833,
+            "speed_mph": 95.2,
+            "speed_kph": 153.3,
+            "pos_3d": [
+              -0.942,
+              8.896,
+              0.866
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 124,
+            "t_sec": 0.2,
+            "speed_mph": 95.1,
+            "speed_kph": 153.1,
+            "pos_3d": [
+              -0.86,
+              9.579,
+              0.694
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 125,
+            "t_sec": 0.2167,
+            "speed_mph": 95.0,
+            "speed_kph": 152.9,
+            "pos_3d": [
+              -0.776,
+              10.26,
+              0.519
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 126,
+            "t_sec": 0.2333,
+            "speed_mph": 94.9,
+            "speed_kph": 152.8,
+            "pos_3d": [
+              -0.692,
+              10.94,
+              0.343
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 127,
+            "t_sec": 0.25,
+            "speed_mph": 94.8,
+            "speed_kph": 152.6,
+            "pos_3d": [
+              -0.607,
+              11.619,
+              0.164
+            ],
+            "phase": "bounce"
+          },
+          {
+            "frame": 128,
+            "t_sec": 0.2667,
+            "speed_mph": 80.8,
+            "speed_kph": 130.0,
+            "pos_3d": [
+              -0.551,
+              13.269,
+              0.15
+            ],
+            "phase": "rebound"
+          },
+          {
+            "frame": 129,
+            "t_sec": 0.2833,
+            "speed_mph": 80.3,
+            "speed_kph": 129.3,
+            "pos_3d": [
+              -0.523,
+              13.865,
+              0.222
+            ],
+            "phase": "rebound"
+          },
+          {
+            "frame": 130,
+            "t_sec": 0.3,
+            "speed_mph": 79.9,
+            "speed_kph": 128.5,
+            "pos_3d": [
+              -0.494,
+              14.457,
+              0.291
+            ],
+            "phase": "rebound"
+          },
+          {
+            "frame": 131,
+            "t_sec": 0.3167,
+            "speed_mph": 79.4,
+            "speed_kph": 127.8,
+            "pos_3d": [
+              -0.465,
+              15.046,
+              0.357
+            ],
+            "phase": "rebound"
+          },
+          {
+            "frame": 133,
+            "t_sec": 0.35,
+            "speed_mph": 78.5,
+            "speed_kph": 126.4,
+            "pos_3d": [
+              -0.405,
+              16.215,
+              0.48
+            ],
+            "phase": "rebound"
+          },
+          {
+            "frame": 134,
+            "t_sec": 0.3667,
+            "speed_mph": 78.1,
+            "speed_kph": 125.7,
+            "pos_3d": [
+              -0.374,
+              16.796,
+              0.537
+            ],
+            "phase": "rebound"
+          },
+          {
+            "frame": 137,
+            "t_sec": 0.4167,
+            "speed_mph": 76.8,
+            "speed_kph": 123.7,
+            "pos_3d": [
+              -0.278,
+              18.518,
+              0.69
+            ],
+            "phase": "rebound"
+          },
+          {
+            "frame": 138,
+            "t_sec": 0.4333,
+            "speed_mph": 76.4,
+            "speed_kph": 123.0,
+            "pos_3d": [
+              -0.245,
+              19.087,
+              0.735
+            ],
+            "phase": "rebound"
+          },
+          {
+            "frame": 139,
+            "t_sec": 0.45,
+            "speed_mph": 76.0,
+            "speed_kph": 122.4,
+            "pos_3d": [
+              -0.212,
+              19.652,
+              0.777
+            ],
+            "phase": "arrival"
+          }
+        ],
+        "release_speed_mph": 96.4,
+        "pre_bounce_speed_mph": 94.8,
+        "post_bounce_speed_mph": 81.3,
+        "arrival_speed_mph": 76.0,
+        "speed_drop_air_mph": 1.6,
+        "speed_drop_turf_mph": 13.5,
+        "total_speed_decay_mph": 20.4,
+        "scale_to_stadium": 1.0,
+        "stadium_pitch_y": 0.155,
+        "pitch_length_m": 20.12
+      },
+      "pitch_x": -0.562,
+      "pitch_y": 12.11,
+      "release_height_m": 2.45,
+      "release_lateral_m": -1.6,
+      "arrival_height_m": 0.76,
+      "release_frame": 112,
+      "bounce_frame": 127,
+      "end_frame": 139,
+      "frames_processed": 144
+    },
+    {
+      "ball_number": 2,
+      "timestamp": "00:34:05",
+      "filename": "WhatsApp Video 2026-10-27 at 13.52.15.mp4",
+      "video_url": "/static/outputs/ball_track_1793493238.mp4",
+      "download_url": "/api/download?file=ball_track_1793493238.mp4&filename=detected_ball_WhatsApp Video 2026-10-27 at 13.52.15.mp4",
+      "speed_mph": 78.2,
+      "speed_kph": 125.9,
+      "swing_sf": 0.1,
+      "spin_deg": 8.8,
+      "distance_from_crease_m": 3.51,
+      "length_zone": "Full",
+      "lateral_line": "Off Stump",
+      "bounce_coord": [
+        161.28126525878906,
+        486.2063446044922,
+        124
+      ],
+      "trajectory_3d": {
+        "points_meters": [
+          {
+            "x": -0.683,
+            "y": 2.906,
+            "z": 1.686
+          },
+          {
+            "x": -0.609,
+            "y": 4.058,
+            "z": 1.587
+          },
+          {
+            "x": -0.541,
+            "y": 5.198,
+            "z": 1.478
+          },
+          {
+            "x": -0.477,
+            "y": 6.324,
+            "z": 1.359
+          },
+          {
+            "x": -0.418,
+            "y": 7.438,
+            "z": 1.232
+          },
+          {
+            "x": -0.267,
+            "y": 10.706,
+            "z": 0.792
+          },
+          {
+            "x": -0.156,
+            "y": 13.869,
+            "z": 0.27
+          },
+          {
+            "x": -0.102,
+            "y": 15.923,
+            "z": -0.123
+          },
+          {
+            "x": -0.156,
+            "y": 17.971,
+            "z": 0.361
+          },
+          {
+            "x": -0.158,
+            "y": 19.16,
+            "z": 0.524
+          }
+        ],
+        "release": {
+          "x": -0.811,
+          "y": 1.35,
+          "z": 1.85
+        },
+        "bounce": {
+          "x": -0.151,
+          "y": 15.39,
+          "z": 0.0
+        },
+        "arrival": {
+          "x": -0.158,
+          "y": 19.8,
+          "z": 0.53
+        },
+        "frame_speeds": [
+          {
+            "frame": 112,
+            "t_sec": 0.0,
+            "speed_mph": 78.2,
+            "speed_kph": 125.9,
+            "pos_3d": [
+              -0.683,
+              2.906,
+              1.686
+            ],
+            "phase": "release"
+          },
+          {
+            "frame": 113,
+            "t_sec": 0.0333,
+            "speed_mph": 77.3,
+            "speed_kph": 124.5,
+            "pos_3d": [
+              -0.609,
+              4.058,
+              1.587
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 114,
+            "t_sec": 0.0667,
+            "speed_mph": 76.5,
+            "speed_kph": 123.1,
+            "pos_3d": [
+              -0.541,
+              5.198,
+              1.478
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 115,
+            "t_sec": 0.1,
+            "speed_mph": 75.7,
+            "speed_kph": 121.9,
+            "pos_3d": [
+              -0.477,
+              6.324,
+              1.359
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 116,
+            "t_sec": 0.1333,
+            "speed_mph": 74.9,
+            "speed_kph": 120.6,
+            "pos_3d": [
+              -0.418,
+              7.438,
+              1.232
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 119,
+            "t_sec": 0.2333,
+            "speed_mph": 72.8,
+            "speed_kph": 117.1,
+            "pos_3d": [
+              -0.267,
+              10.706,
+              0.792
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 122,
+            "t_sec": 0.3333,
+            "speed_mph": 70.8,
+            "speed_kph": 113.9,
+            "pos_3d": [
+              -0.156,
+              13.869,
+              0.27
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 124,
+            "t_sec": 0.3999,
+            "speed_mph": 69.6,
+            "speed_kph": 112.0,
+            "pos_3d": [
+              -0.102,
+              15.923,
+              -0.123
+            ],
+            "phase": "bounce"
+          },
+          {
+            "frame": 126,
+            "t_sec": 0.4666,
+            "speed_mph": 57.9,
+            "speed_kph": 93.1,
+            "pos_3d": [
+              -0.156,
+              17.971,
+              0.361
+            ],
+            "phase": "rebound"
+          },
+          {
+            "frame": 127,
+            "t_sec": 0.4999,
+            "speed_mph": 57.6,
+            "speed_kph": 92.7,
+            "pos_3d": [
+              -0.158,
+              19.16,
+              0.524
+            ],
+            "phase": "arrival"
+          }
+        ],
+        "release_speed_mph": 78.2,
+        "pre_bounce_speed_mph": 69.6,
+        "post_bounce_speed_mph": 58.4,
+        "arrival_speed_mph": 57.6,
+        "speed_drop_air_mph": 8.6,
+        "speed_drop_turf_mph": 11.2,
+        "total_speed_decay_mph": 20.6,
+        "scale_to_stadium": 1.0,
+        "stadium_pitch_y": 0.155,
+        "pitch_length_m": 20.12
+      },
+      "pitch_x": -0.151,
+      "pitch_y": 15.39,
+      "release_height_m": 1.85,
+      "release_lateral_m": -0.811,
+      "arrival_height_m": 0.53,
+      "release_frame": 112,
+      "bounce_frame": 124,
+      "end_frame": 127,
+      "frames_processed": 128
+    },
+    {
+      "ball_number": 3,
+      "timestamp": "00:35:04",
+      "filename": "WhatsApp Video 2026-10-25 at 11.45.58 (1).mp4",
+      "video_url": "/static/outputs/ball_track_1793493294.mp4",
+      "download_url": "/api/download?file=ball_track_1793493294.mp4&filename=detected_ball_WhatsApp Video 2026-10-25 at 11.45.58 (1).mp4",
+      "speed_mph": 97.3,
+      "speed_kph": 156.6,
+      "swing_sf": 0.1,
+      "spin_deg": 8.8,
+      "distance_from_crease_m": 6.41,
+      "length_zone": "Good Length",
+      "lateral_line": "Outside Off",
+      "bounce_coord": [
+        203.42191314697266,
+        481.2160186767578,
+        282
+      ],
+      "trajectory_3d": {
+        "points_meters": [
+          {
+            "x": -1.8,
+            "y": 2.067,
+            "z": 2.594
+          },
+          {
+            "x": -1.7,
+            "y": 2.766,
+            "z": 2.431
+          },
+          {
+            "x": -1.6,
+            "y": 3.464,
+            "z": 2.265
+          },
+          {
+            "x": -1.499,
+            "y": 4.161,
+            "z": 2.098
+          },
+          {
+            "x": -1.397,
+            "y": 4.856,
+            "z": 1.927
+          },
+          {
+            "x": -1.295,
+            "y": 5.549,
+            "z": 1.755
+          },
+          {
+            "x": -1.191,
+            "y": 6.241,
+            "z": 1.58
+          },
+          {
+            "x": -1.087,
+            "y": 6.931,
+            "z": 1.403
+          },
+          {
+            "x": -0.982,
+            "y": 7.62,
+            "z": 1.223
+          },
+          {
+            "x": -0.877,
+            "y": 8.308,
+            "z": 1.041
+          },
+          {
+            "x": -0.771,
+            "y": 8.994,
+            "z": 0.857
+          },
+          {
+            "x": -0.664,
+            "y": 9.678,
+            "z": 0.671
+          },
+          {
+            "x": -0.556,
+            "y": 10.361,
+            "z": 0.482
+          },
+          {
+            "x": -0.448,
+            "y": 11.043,
+            "z": 0.291
+          },
+          {
+            "x": -0.339,
+            "y": 11.723,
+            "z": 0.097
+          },
+          {
+            "x": -0.385,
+            "y": 14.355,
+            "z": 0.135
+          },
+          {
+            "x": -0.356,
+            "y": 14.953,
+            "z": 0.23
+          },
+          {
+            "x": -0.325,
+            "y": 15.551,
+            "z": 0.322
+          },
+          {
+            "x": -0.295,
+            "y": 16.147,
+            "z": 0.411
+          },
+          {
+            "x": -0.263,
+            "y": 16.743,
+            "z": 0.497
+          },
+          {
+            "x": -0.231,
+            "y": 17.337,
+            "z": 0.58
+          },
+          {
+            "x": -0.199,
+            "y": 17.93,
+            "z": 0.66
+          },
+          {
+            "x": -0.166,
+            "y": 18.522,
+            "z": 0.738
+          }
+        ],
+        "release": {
+          "x": -1.6,
+          "y": 1.35,
+          "z": 2.45
+        },
+        "bounce": {
+          "x": -0.406,
+          "y": 12.49,
+          "z": 0.0
+        },
+        "arrival": {
+          "x": -0.152,
+          "y": 19.8,
+          "z": 0.7
+        },
+        "frame_speeds": [
+          {
+            "frame": 268,
+            "t_sec": 0.0,
+            "speed_mph": 97.3,
+            "speed_kph": 156.7,
+            "pos_3d": [
+              -1.8,
+              2.067,
+              2.594
+            ],
+            "phase": "release"
+          },
+          {
+            "frame": 269,
+            "t_sec": 0.0167,
+            "speed_mph": 97.2,
+            "speed_kph": 156.5,
+            "pos_3d": [
+              -1.7,
+              2.766,
+              2.431
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 270,
+            "t_sec": 0.0333,
+            "speed_mph": 97.1,
+            "speed_kph": 156.3,
+            "pos_3d": [
+              -1.6,
+              3.464,
+              2.265
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 271,
+            "t_sec": 0.05,
+            "speed_mph": 97.0,
+            "speed_kph": 156.1,
+            "pos_3d": [
+              -1.499,
+              4.161,
+              2.098
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 272,
+            "t_sec": 0.0667,
+            "speed_mph": 96.9,
+            "speed_kph": 156.0,
+            "pos_3d": [
+              -1.397,
+              4.856,
+              1.927
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 273,
+            "t_sec": 0.0833,
+            "speed_mph": 96.8,
+            "speed_kph": 155.8,
+            "pos_3d": [
+              -1.295,
+              5.549,
+              1.755
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 274,
+            "t_sec": 0.1,
+            "speed_mph": 96.7,
+            "speed_kph": 155.6,
+            "pos_3d": [
+              -1.191,
+              6.241,
+              1.58
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 275,
+            "t_sec": 0.1167,
+            "speed_mph": 96.6,
+            "speed_kph": 155.5,
+            "pos_3d": [
+              -1.087,
+              6.931,
+              1.403
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 276,
+            "t_sec": 0.1334,
+            "speed_mph": 96.5,
+            "speed_kph": 155.3,
+            "pos_3d": [
+              -0.982,
+              7.62,
+              1.223
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 277,
+            "t_sec": 0.15,
+            "speed_mph": 96.4,
+            "speed_kph": 155.2,
+            "pos_3d": [
+              -0.877,
+              8.308,
+              1.041
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 278,
+            "t_sec": 0.1667,
+            "speed_mph": 96.3,
+            "speed_kph": 155.0,
+            "pos_3d": [
+              -0.771,
+              8.994,
+              0.857
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 279,
+            "t_sec": 0.1834,
+            "speed_mph": 96.2,
+            "speed_kph": 154.9,
+            "pos_3d": [
+              -0.664,
+              9.678,
+              0.671
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 280,
+            "t_sec": 0.2,
+            "speed_mph": 96.1,
+            "speed_kph": 154.7,
+            "pos_3d": [
+              -0.556,
+              10.361,
+              0.482
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 281,
+            "t_sec": 0.2167,
+            "speed_mph": 96.0,
+            "speed_kph": 154.6,
+            "pos_3d": [
+              -0.448,
+              11.043,
+              0.291
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 282,
+            "t_sec": 0.2334,
+            "speed_mph": 96.0,
+            "speed_kph": 154.4,
+            "pos_3d": [
+              -0.339,
+              11.723,
+              0.097
+            ],
+            "phase": "bounce"
+          },
+          {
+            "frame": 283,
+            "t_sec": 0.25,
+            "speed_mph": 81.5,
+            "speed_kph": 131.2,
+            "pos_3d": [
+              -0.385,
+              14.355,
+              0.135
+            ],
+            "phase": "rebound"
+          },
+          {
+            "frame": 284,
+            "t_sec": 0.2667,
+            "speed_mph": 81.3,
+            "speed_kph": 130.8,
+            "pos_3d": [
+              -0.356,
+              14.953,
+              0.23
+            ],
+            "phase": "rebound"
+          },
+          {
+            "frame": 285,
+            "t_sec": 0.2834,
+            "speed_mph": 81.1,
+            "speed_kph": 130.5,
+            "pos_3d": [
+              -0.325,
+              15.551,
+              0.322
+            ],
+            "phase": "rebound"
+          },
+          {
+            "frame": 286,
+            "t_sec": 0.3,
+            "speed_mph": 80.9,
+            "speed_kph": 130.2,
+            "pos_3d": [
+              -0.295,
+              16.147,
+              0.411
+            ],
+            "phase": "rebound"
+          },
+          {
+            "frame": 287,
+            "t_sec": 0.3167,
+            "speed_mph": 80.7,
+            "speed_kph": 129.9,
+            "pos_3d": [
+              -0.263,
+              16.743,
+              0.497
+            ],
+            "phase": "rebound"
+          },
+          {
+            "frame": 288,
+            "t_sec": 0.3334,
+            "speed_mph": 80.5,
+            "speed_kph": 129.6,
+            "pos_3d": [
+              -0.231,
+              17.337,
+              0.58
+            ],
+            "phase": "rebound"
+          },
+          {
+            "frame": 289,
+            "t_sec": 0.3501,
+            "speed_mph": 80.3,
+            "speed_kph": 129.3,
+            "pos_3d": [
+              -0.199,
+              17.93,
+              0.66
+            ],
+            "phase": "rebound"
+          },
+          {
+            "frame": 290,
+            "t_sec": 0.3667,
+            "speed_mph": 80.1,
+            "speed_kph": 129.0,
+            "pos_3d": [
+              -0.166,
+              18.522,
+              0.738
+            ],
+            "phase": "arrival"
+          }
+        ],
+        "release_speed_mph": 97.3,
+        "pre_bounce_speed_mph": 96.0,
+        "post_bounce_speed_mph": 81.7,
+        "arrival_speed_mph": 80.1,
+        "speed_drop_air_mph": 1.3,
+        "speed_drop_turf_mph": 14.3,
+        "total_speed_decay_mph": 17.2,
+        "scale_to_stadium": 1.0,
+        "stadium_pitch_y": 0.155,
+        "pitch_length_m": 20.12
+      },
+      "pitch_x": -0.406,
+      "pitch_y": 12.49,
+      "release_height_m": 2.45,
+      "release_lateral_m": -1.6,
+      "arrival_height_m": 0.7,
+      "release_frame": 268,
+      "bounce_frame": 282,
+      "end_frame": 290,
+      "frames_processed": 297
+    },
+    {
+      "ball_number": 4,
+      "timestamp": "00:35:34",
+      "filename": "WhatsApp Video 2026-10-27 at 13.51.49.mp4",
+      "video_url": "/static/outputs/ball_track_1793493331.mp4",
+      "download_url": "/api/download?file=ball_track_1793493331.mp4&filename=detected_ball_WhatsApp Video 2026-10-27 at 13.51.49.mp4",
+      "speed_mph": 95.3,
+      "speed_kph": 153.4,
+      "swing_sf": 0.1,
+      "spin_deg": 8.8,
+      "distance_from_crease_m": 3.19,
+      "length_zone": "Full",
+      "lateral_line": "Outside Off",
+      "bounce_coord": [
+        163.96019744873047,
+        435.260009765625,
+        51
+      ],
+      "trajectory_3d": {
+        "points_meters": [
+          {
+            "x": -1.8,
+            "y": 2.401,
+            "z": 2.498
+          },
+          {
+            "x": -1.72,
+            "y": 3.798,
+            "z": 2.272
+          },
+          {
+            "x": -1.644,
+            "y": 5.189,
+            "z": 2.036
+          },
+          {
+            "x": -1.571,
+            "y": 6.574,
+            "z": 1.79
+          },
+          {
+            "x": -1.502,
+            "y": 7.953,
+            "z": 1.534
+          },
+          {
+            "x": -1.374,
+            "y": 10.694,
+            "z": 0.992
+          },
+          {
+            "x": -1.315,
+            "y": 12.056,
+            "z": 0.707
+          },
+          {
+            "x": -1.26,
+            "y": 13.413,
+            "z": 0.412
+          },
+          {
+            "x": -1.208,
+            "y": 14.763,
+            "z": 0.108
+          },
+          {
+            "x": -1.199,
+            "y": 17.756,
+            "z": 0.278
+          },
+          {
+            "x": -1.177,
+            "y": 18.949,
+            "z": 0.517
+          }
+        ],
+        "release": {
+          "x": -1.6,
+          "y": 1.35,
+          "z": 2.45
+        },
+        "bounce": {
+          "x": -1.2,
+          "y": 15.71,
+          "z": 0.0
+        },
+        "arrival": {
+          "x": -0.85,
+          "y": 19.8,
+          "z": 0.49
+        },
+        "frame_speeds": [
+          {
+            "frame": 42,
+            "t_sec": 0.0,
+            "speed_mph": 95.3,
+            "speed_kph": 153.3,
+            "pos_3d": [
+              -1.8,
+              2.401,
+              2.498
+            ],
+            "phase": "release"
+          },
+          {
+            "frame": 43,
+            "t_sec": 0.0333,
+            "speed_mph": 95.0,
+            "speed_kph": 152.9,
+            "pos_3d": [
+              -1.72,
+              3.798,
+              2.272
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 44,
+            "t_sec": 0.0666,
+            "speed_mph": 94.7,
+            "speed_kph": 152.4,
+            "pos_3d": [
+              -1.644,
+              5.189,
+              2.036
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 45,
+            "t_sec": 0.1,
+            "speed_mph": 94.4,
+            "speed_kph": 151.9,
+            "pos_3d": [
+              -1.571,
+              6.574,
+              1.79
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 46,
+            "t_sec": 0.1333,
+            "speed_mph": 94.1,
+            "speed_kph": 151.5,
+            "pos_3d": [
+              -1.502,
+              7.953,
+              1.534
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 48,
+            "t_sec": 0.1999,
+            "speed_mph": 93.6,
+            "speed_kph": 150.6,
+            "pos_3d": [
+              -1.374,
+              10.694,
+              0.992
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 49,
+            "t_sec": 0.2333,
+            "speed_mph": 93.4,
+            "speed_kph": 150.2,
+            "pos_3d": [
+              -1.315,
+              12.056,
+              0.707
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 50,
+            "t_sec": 0.2666,
+            "speed_mph": 93.1,
+            "speed_kph": 149.9,
+            "pos_3d": [
+              -1.26,
+              13.413,
+              0.412
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 51,
+            "t_sec": 0.2999,
+            "speed_mph": 92.9,
+            "speed_kph": 149.5,
+            "pos_3d": [
+              -1.208,
+              14.763,
+              0.108
+            ],
+            "phase": "bounce"
+          },
+          {
+            "frame": 52,
+            "t_sec": 0.3332,
+            "speed_mph": 77.6,
+            "speed_kph": 124.9,
+            "pos_3d": [
+              -1.199,
+              17.756,
+              0.278
+            ],
+            "phase": "rebound"
+          },
+          {
+            "frame": 53,
+            "t_sec": 0.3666,
+            "speed_mph": 77.2,
+            "speed_kph": 124.2,
+            "pos_3d": [
+              -1.177,
+              18.949,
+              0.517
+            ],
+            "phase": "arrival"
+          }
+        ],
+        "release_speed_mph": 95.3,
+        "pre_bounce_speed_mph": 92.9,
+        "post_bounce_speed_mph": 78.0,
+        "arrival_speed_mph": 77.2,
+        "speed_drop_air_mph": 2.4,
+        "speed_drop_turf_mph": 14.9,
+        "total_speed_decay_mph": 18.1,
+        "scale_to_stadium": 1.0,
+        "stadium_pitch_y": 0.155,
+        "pitch_length_m": 20.12
+      },
+      "pitch_x": -1.2,
+      "pitch_y": 15.71,
+      "release_height_m": 2.45,
+      "release_lateral_m": -1.6,
+      "arrival_height_m": 0.49,
+      "release_frame": 42,
+      "bounce_frame": 51,
+      "end_frame": 53,
+      "frames_processed": 56
+    },
+    {
+      "ball_number": 5,
+      "timestamp": "00:36:15",
+      "filename": "See ball,hit ball. \ud83c\udfcf#batting #cricketlife-5.mp4",
+      "video_url": "/static/outputs/ball_track_1793493371.mp4",
+      "download_url": "/api/download?file=ball_track_1793493371.mp4&filename=detected_ball_See ball,hit ball. \ud83c\udfcf#batting #cricketlife-5.mp4",
+      "speed_mph": 95.1,
+      "speed_kph": 153.0,
+      "swing_sf": 0.1,
+      "spin_deg": 8.8,
+      "distance_from_crease_m": 3.16,
+      "length_zone": "Full",
+      "lateral_line": "Outside Off",
+      "bounce_coord": [
+        364.9531707763672,
+        625.0619812011719,
+        167
+      ],
+      "trajectory_3d": {
+        "points_meters": [
+          {
+            "x": -1.8,
+            "y": 1.678,
+            "z": 2.509
+          },
+          {
+            "x": -1.642,
+            "y": 3.07,
+            "z": 2.31
+          },
+          {
+            "x": -1.489,
+            "y": 4.457,
+            "z": 2.101
+          },
+          {
+            "x": -1.34,
+            "y": 5.837,
+            "z": 1.882
+          },
+          {
+            "x": -1.195,
+            "y": 7.212,
+            "z": 1.653
+          },
+          {
+            "x": -1.055,
+            "y": 8.58,
+            "z": 1.414
+          },
+          {
+            "x": -0.919,
+            "y": 9.943,
+            "z": 1.165
+          },
+          {
+            "x": -0.787,
+            "y": 11.3,
+            "z": 0.907
+          },
+          {
+            "x": -0.659,
+            "y": 12.651,
+            "z": 0.639
+          },
+          {
+            "x": -0.536,
+            "y": 13.996,
+            "z": 0.361
+          },
+          {
+            "x": -0.416,
+            "y": 15.336,
+            "z": 0.073
+          },
+          {
+            "x": -0.277,
+            "y": 16.923,
+            "z": 0.213
+          },
+          {
+            "x": -0.139,
+            "y": 18.494,
+            "z": 0.402
+          },
+          {
+            "x": -0.003,
+            "y": 20.051,
+            "z": 0.567
+          }
+        ],
+        "release": {
+          "x": -1.6,
+          "y": 1.35,
+          "z": 2.45
+        },
+        "bounce": {
+          "x": -0.513,
+          "y": 15.74,
+          "z": 0.0
+        },
+        "arrival": {
+          "x": -0.513,
+          "y": 19.8,
+          "z": 0.49
+        },
+        "frame_speeds": [
+          {
+            "frame": 157,
+            "t_sec": 0.0,
+            "speed_mph": 95.1,
+            "speed_kph": 153.1,
+            "pos_3d": [
+              -1.8,
+              1.678,
+              2.509
+            ],
+            "phase": "release"
+          },
+          {
+            "frame": 158,
+            "t_sec": 0.0333,
+            "speed_mph": 94.8,
+            "speed_kph": 152.6,
+            "pos_3d": [
+              -1.642,
+              3.07,
+              2.31
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 159,
+            "t_sec": 0.0667,
+            "speed_mph": 94.5,
+            "speed_kph": 152.0,
+            "pos_3d": [
+              -1.489,
+              4.457,
+              2.101
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 160,
+            "t_sec": 0.1,
+            "speed_mph": 94.1,
+            "speed_kph": 151.5,
+            "pos_3d": [
+              -1.34,
+              5.837,
+              1.882
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 161,
+            "t_sec": 0.1334,
+            "speed_mph": 93.8,
+            "speed_kph": 151.0,
+            "pos_3d": [
+              -1.195,
+              7.212,
+              1.653
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 162,
+            "t_sec": 0.1667,
+            "speed_mph": 93.5,
+            "speed_kph": 150.5,
+            "pos_3d": [
+              -1.055,
+              8.58,
+              1.414
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 163,
+            "t_sec": 0.2,
+            "speed_mph": 93.2,
+            "speed_kph": 150.0,
+            "pos_3d": [
+              -0.919,
+              9.943,
+              1.165
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 164,
+            "t_sec": 0.2334,
+            "speed_mph": 92.9,
+            "speed_kph": 149.6,
+            "pos_3d": [
+              -0.787,
+              11.3,
+              0.907
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 165,
+            "t_sec": 0.2667,
+            "speed_mph": 92.7,
+            "speed_kph": 149.1,
+            "pos_3d": [
+              -0.659,
+              12.651,
+              0.639
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 166,
+            "t_sec": 0.3001,
+            "speed_mph": 92.4,
+            "speed_kph": 148.7,
+            "pos_3d": [
+              -0.536,
+              13.996,
+              0.361
+            ],
+            "phase": "in_flight"
+          },
+          {
+            "frame": 167,
+            "t_sec": 0.3334,
+            "speed_mph": 92.1,
+            "speed_kph": 148.3,
+            "pos_3d": [
+              -0.416,
+              15.336,
+              0.073
+            ],
+            "phase": "bounce"
+          },
+          {
+            "frame": 168,
+            "t_sec": 
